@@ -1,0 +1,46 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.8	//
+ActionChains	data_collector.py	/^from selenium.webdriver.common.action_chains import ActionChains$/;"	i
+ActionChains	test.py	/^from selenium.webdriver.common.action_chains import ActionChains$/;"	i
+By	data_collector.py	/^from selenium.webdriver.common.by import By$/;"	i
+By	test.py	/^from selenium.webdriver.common.by import By$/;"	i
+EC	data_collector.py	/^from selenium.webdriver.support import expected_conditions as EC$/;"	i
+EC	test.py	/^from selenium.webdriver.support import expected_conditions as EC$/;"	i
+Keys	data_collector.py	/^from selenium.webdriver.common.keys import Keys$/;"	i
+Keys	test.py	/^from selenium.webdriver.common.keys import Keys$/;"	i
+Options	data_collector.py	/^from selenium.webdriver.chrome.options import Options$/;"	i
+Options	test.py	/^from selenium.webdriver.chrome.options import Options$/;"	i
+PATH	data_collector.py	/^PATH = "\/Applications\/chromedriver"$/;"	v
+WebDriverWait	data_collector.py	/^from selenium.webdriver.support.ui import WebDriverWait$/;"	i
+WebDriverWait	test.py	/^from selenium.webdriver.support.ui import WebDriverWait$/;"	i
+a	test.py	/^a = "news"$/;"	v
+b	test.py	/^b = "string"$/;"	v
+channel_name	data_collector.py	/^    channel_name = find_channel_name(channel)$/;"	v
+datetime	data_collector.py	/^import datetime$/;"	i
+datetime	test.py	/^import datetime$/;"	i
+english_channels	data_collector.py	/^english_channels = [ link[:-1] for link in english_channels_file.readlines() ]$/;"	v
+english_channels	data_collector.py	/^english_channels = english_channels[9:10]$/;"	v
+english_channels_file	data_collector.py	/^english_channels_file = open("english_channel_ytlinks", "r")$/;"	v
+find_channel_name	data_collector.py	/^def find_channel_name(channel_link):$/;"	f
+g_end	data_collector.py	/^g_end = time.time()$/;"	v
+g_start	data_collector.py	/^g_start = time.time()$/;"	v
+hindi_channels	data_collector.py	/^hindi_channels = [ link[:-1] for link in hindi_channels_file.readlines() ]$/;"	v
+hindi_channels_file	data_collector.py	/^hindi_channels_file = open("hindi_channel_ytlinks", "r")$/;"	v
+inp	test.py	/^inp = inp.split("\\\\#\\\\")$/;"	v
+inp	test.py	/^inp = input()$/;"	v
+logging	data_collector.py	/^import logging$/;"	i
+logging	test.py	/^import logging$/;"	i
+scrape_channel_data	data_collector.py	/^def scrape_channel_data(channel_link):$/;"	f
+sys	data_collector.py	/^import sys$/;"	i
+sys	test.py	/^import sys$/;"	i
+t_end	data_collector.py	/^    t_end = time.time()$/;"	v
+t_start	data_collector.py	/^    t_start = time.time()$/;"	v
+time	data_collector.py	/^import time$/;"	i
+time	test.py	/^import time$/;"	i
+wait_till_visible_xpath	data_collector.py	/^def wait_till_visible_xpath(driver,xpath):$/;"	f
+webdriver	data_collector.py	/^from selenium import webdriver$/;"	i
+webdriver	test.py	/^from selenium import webdriver$/;"	i
