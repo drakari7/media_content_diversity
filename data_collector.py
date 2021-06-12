@@ -37,6 +37,8 @@ def scrape_channel_data(channel_link):
     options = Options()
     options.add_argument('--headless')
     options.add_argument('--mute-audio')
+    prefs = {"profile.managed_default_content_settings.images": 2}
+    options.add_experimental_option("prefs", prefs)
     driver = webdriver.Chrome(PATH, options=options)
 
     driver.get(channel_link)

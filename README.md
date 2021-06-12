@@ -1,4 +1,4 @@
-### This is the starting of the README
+# This is the starting of the README
 
 
-## Readme needs to be updated.
+Readme needs to be updated.
