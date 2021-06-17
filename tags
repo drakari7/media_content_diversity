@@ -4,43 +4,37 @@
 !_TAG_PROGRAM_NAME	Exuberant Ctags	//
 !_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
 !_TAG_PROGRAM_VERSION	5.8	//
-ActionChains	data_collector.py	/^from selenium.webdriver.common.action_chains import ActionChains$/;"	i
-ActionChains	test.py	/^from selenium.webdriver.common.action_chains import ActionChains$/;"	i
 By	data_collector.py	/^from selenium.webdriver.common.by import By$/;"	i
 By	test.py	/^from selenium.webdriver.common.by import By$/;"	i
+Dict	channel_statistics.py	/^from typing import List, Dict$/;"	i
 EC	data_collector.py	/^from selenium.webdriver.support import expected_conditions as EC$/;"	i
 EC	test.py	/^from selenium.webdriver.support import expected_conditions as EC$/;"	i
-Keys	data_collector.py	/^from selenium.webdriver.common.keys import Keys$/;"	i
-Keys	test.py	/^from selenium.webdriver.common.keys import Keys$/;"	i
+List	channel_statistics.py	/^from typing import List, Dict$/;"	i
+News_Channel	channel_statistics.py	/^class News_Channel:$/;"	c
 Options	data_collector.py	/^from selenium.webdriver.chrome.options import Options$/;"	i
 Options	test.py	/^from selenium.webdriver.chrome.options import Options$/;"	i
 PATH	data_collector.py	/^PATH = "\/Applications\/chromedriver"$/;"	v
 WebDriverWait	data_collector.py	/^from selenium.webdriver.support.ui import WebDriverWait$/;"	i
 WebDriverWait	test.py	/^from selenium.webdriver.support.ui import WebDriverWait$/;"	i
-a	test.py	/^a = "news"$/;"	v
-b	test.py	/^b = "string"$/;"	v
-channel_name	data_collector.py	/^    channel_name = find_channel_name(channel)$/;"	v
+__init__	channel_statistics.py	/^    def __init__(self, link):$/;"	m	class:News_Channel
+arr	test.py	/^    arr = [ line[:-1].split("\\\\#\\\\") for line in file.readlines() ]$/;"	v
+average_views	channel_statistics.py	/^    def average_views(self) -> float:$/;"	m	class:News_Channel
 datetime	data_collector.py	/^import datetime$/;"	i
-datetime	test.py	/^import datetime$/;"	i
-english_channels	data_collector.py	/^english_channels = [ link[:-1] for link in english_channels_file.readlines() ]$/;"	v
-english_channels	data_collector.py	/^english_channels = english_channels[9:10]$/;"	v
-english_channels_file	data_collector.py	/^english_channels_file = open("english_channel_ytlinks", "r")$/;"	v
-find_channel_name	data_collector.py	/^def find_channel_name(channel_link):$/;"	f
-g_end	data_collector.py	/^g_end = time.time()$/;"	v
-g_start	data_collector.py	/^g_start = time.time()$/;"	v
-hindi_channels	data_collector.py	/^hindi_channels = [ link[:-1] for link in hindi_channels_file.readlines() ]$/;"	v
-hindi_channels_file	data_collector.py	/^hindi_channels_file = open("hindi_channel_ytlinks", "r")$/;"	v
-inp	test.py	/^inp = inp.split("\\\\#\\\\")$/;"	v
-inp	test.py	/^inp = input()$/;"	v
+get_channel_links	tools.py	/^def get_channel_links():$/;"	f
+get_channel_name	tools.py	/^def get_channel_name(channel_link: str):$/;"	f
+is_int	tools.py	/^def is_int(a: str) -> bool:$/;"	f
 logging	data_collector.py	/^import logging$/;"	i
-logging	test.py	/^import logging$/;"	i
+main	channel_statistics.py	/^def main():$/;"	f
+main	data_collector.py	/^def main():$/;"	f
+plt	channel_statistics.py	/^import matplotlib as plt$/;"	i
 scrape_channel_data	data_collector.py	/^def scrape_channel_data(channel_link):$/;"	f
+statistics	channel_statistics.py	/^import statistics$/;"	i
 sys	data_collector.py	/^import sys$/;"	i
 sys	test.py	/^import sys$/;"	i
-t_end	data_collector.py	/^    t_end = time.time()$/;"	v
-t_start	data_collector.py	/^    t_start = time.time()$/;"	v
 time	data_collector.py	/^import time$/;"	i
-time	test.py	/^import time$/;"	i
+time_range	channel_statistics.py	/^    def time_range(self):$/;"	m	class:News_Channel
+tools	channel_statistics.py	/^import tools$/;"	i
+tools	data_collector.py	/^import tools$/;"	i
 wait_till_visible_xpath	data_collector.py	/^def wait_till_visible_xpath(driver,xpath):$/;"	f
 webdriver	data_collector.py	/^from selenium import webdriver$/;"	i
 webdriver	test.py	/^from selenium import webdriver$/;"	i

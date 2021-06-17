@@ -1,6 +1,4 @@
 from selenium import webdriver
-from selenium.webdriver.common.action_chains import ActionChains
-from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
@@ -9,6 +7,9 @@ import time
 import datetime
 import logging
 import sys
+
+### local imports
+import tools
 
 PATH = "/Applications/chromedriver"
 
@@ -22,12 +23,6 @@ def wait_till_visible_xpath(driver,xpath):
     WebDriverWait(driver, 10).until(
             EC.visibility_of_element_located((By.XPATH, xpath))
     )
-
-def find_channel_name(channel_link):
-    channel_name = channel_link.split('/')[4]
-    if ( channel_name == "videos" ):
-        channel_name = channel_link.split('/')[3]
-    return channel_name
 
     
 def scrape_channel_data(channel_link):
@@ -44,7 +39,7 @@ def scrape_channel_data(channel_link):
     driver.get(channel_link)
 
     ### Output file handling 
-    channel_name = find_channel_name(channel_link)
+    channel_name = tools.get_channel_name(channel_link)
     file_name = 'channel_data/' + channel_name + '.csv'
     write_file = open(file_name, "w")
 
@@ -130,30 +125,25 @@ def scrape_channel_data(channel_link):
 #######################
 ### Start of Main Code
 #######################
-g_start = time.time()
+def main():
+    g_start = time.time()
 
-english_channels_file = open("english_channel_ytlinks", "r")
-hindi_channels_file = open("hindi_channel_ytlinks", "r")
+    channels = tools.get_channel_links()
 
-english_channels = [ link[:-1] for link in english_channels_file.readlines() ]
-hindi_channels = [ link[:-1] for link in hindi_channels_file.readlines() ]
+    # For testing purposes, use channel 11, syntax is channels[10:]
+    channels = channels[10:]
 
-# add hindi channels to english list
-english_channels.extend(hindi_channels)
+    for channel in channels:
+        channel_name = tools.get_channel_name(channel)
 
-# Uncomment for testing on only 1 channel
-english_channels = english_channels[9:10]
+        t_start = time.time()
+        scrape_channel_data(channel)
+        t_end = time.time()
+        print("Time taken for channel {0} = {1} s".format(channel_name,t_end-t_start))
 
-for channel in english_channels:
-    channel_name = find_channel_name(channel)
-
-    t_start = time.time()
-    scrape_channel_data(channel)
-    t_end = time.time()
-    print("Time taken for channel {0} = {1} s".format(channel_name,t_end-t_start))
+    g_end = time.time()
+    print("Total time = {}".format(g_end - g_start))
 
 
-g_end = time.time()
-print("Total time = {}".format(g_end - g_start))
-
-
+if __name__ == "__main__":
+    main()
