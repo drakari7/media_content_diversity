@@ -1,6 +1,7 @@
-#Importing libraries
+### Importing libraries
 import matplotlib as plt
 import statistics
+import traceback
 
 from typing import List, Dict
 
@@ -33,16 +34,21 @@ class News_Channel:
     def time_range(self):
         return self.channel_data[-1][2] + " to " + self.channel_data[0][2]
 
+    def is_broken(self):
+        for index,line in enumerate(self.channel_data):
+            if len(line) < 5:
+                print(index+1, len(line))
 
+    
 
 ### For testing purposes
 def main():
-    test_link = 'https://www.youtube.com/c/DDIndia/videos'
+    test_links = tools.get_channel_links()[:10]
 
-    test_channel = News_Channel(test_link)
-
-
-    print(test_channel.time_range())
+    for link in test_links:
+        test_channel = News_Channel(link)
+        print(test_channel.channel_name)
+        test_channel.is_broken()
 
 
 if __name__ == "__main__":

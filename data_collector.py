@@ -11,19 +11,17 @@ import sys
 ### local imports
 import tools
 
-PATH = "/Applications/chromedriver"
-
 ### logger options
 logging.basicConfig(filename = 'logs', filemode='w', level = logging.INFO)
 
-##################
-### Functions
-##################
+PATH = "/Applications/chromedriver"
+
+
+#--------Functions--------------------------
 def wait_till_visible_xpath(driver,xpath):
     WebDriverWait(driver, 10).until(
             EC.visibility_of_element_located((By.XPATH, xpath))
     )
-
     
 def scrape_channel_data(channel_link):
     cs_time = time.time()
@@ -86,8 +84,8 @@ def scrape_channel_data(channel_link):
     # processing each of the urls 1 by 1, if we run into some error, then we skip the video
     skipped_videos_count = 0
 
-    for i in range(len(video_urls)):
-        driver.get(video_urls[i])
+    for i,url in enumerate(video_urls):
+        driver.get(url)
         
         ### Wait for title to load, if can't then print error and continue
         title_xpath ='//*[@id="container"]/h1/yt-formatted-string' 
@@ -96,7 +94,7 @@ def scrape_channel_data(channel_link):
         except:
             print("Something went wrong with the video: " + video_titles[i], file = sys.stderr)
             print("Video ignored!", file = sys.stderr)
-            logging.info("Corrupted URL : {0}".format(video_urls[i]))
+            logging.info("Corrupted URL : {0}".format(url))
             skipped_videos_count += 1
             continue
 
@@ -110,27 +108,25 @@ def scrape_channel_data(channel_link):
         date = driver.find_element_by_xpath(date_xpath).get_attribute("innerText")
 
         keywords = driver.find_element_by_name("keywords").get_attribute("content")
+        keywords = ' '.join(keywords.splitlines())
 
         description_xpath = '//*[@id="description"]/yt-formatted-string'
         description = driver.find_element_by_xpath(description_xpath).get_attribute("innerText")
         description = ' '.join(description.splitlines())
 
         print("{0}\\#\\{1}\\#\\{2}\\#\\{3}\\#\\{4}".format(title,views,date,keywords,description), file = write_file )
-        logging.info("Video No. {0} processed: URL - {1}   -   Video {2}".format(i, video_urls[i], title))
+        logging.info("Video No. {0} processed: URL - {1}   -   Video {2}".format(i, url, title))
 
     print("Total videos skipped for channel {0} = {1}".format(channel_name, skipped_videos_count))
     write_file.close()
     driver.close()
 
-#######################
-### Start of Main Code
-#######################
+#------------------ Start of Main Code -------------------------------
 def main():
     g_start = time.time()
 
-    channels = tools.get_channel_links()
-
     # For testing purposes, use channel 11, syntax is channels[10:]
+    channels = tools.get_channel_links()
     channels = channels[10:]
 
     for channel in channels:
@@ -147,3 +143,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
