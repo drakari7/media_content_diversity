@@ -127,7 +127,7 @@ def main():
 
     # For testing purposes, use channel 11, syntax is channels[10:]
     channels = tools.get_channel_links()
-    channels = channels[10:]
+    channels = channels[:]
 
     for channel in channels:
         channel_name = tools.get_channel_name(channel)

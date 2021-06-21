@@ -17,34 +17,45 @@ PATH	data_collector.py	/^PATH = "\/Applications\/chromedriver"$/;"	v
 WebDriverWait	data_collector.py	/^from selenium.webdriver.support.ui import WebDriverWait$/;"	i
 WebDriverWait	test.py	/^from selenium.webdriver.support.ui import WebDriverWait$/;"	i
 __init__	channel_statistics.py	/^    def __init__(self, link):$/;"	m	class:News_Channel
-a	test.py	/^a = "1002"$/;"	v
 average_views	channel_statistics.py	/^    def average_views(self) -> float:$/;"	m	class:News_Channel
-b	test.py	/^b = "lala"$/;"	v
+channel_statistics	graphs.py	/^import channel_statistics$/;"	i
+check	test.py	/^check = {'name': nme, 'degree': deg, 'score': scr} $/;"	v
 chunks	sanitise_data.py	/^                chunks = line.split('\\\\#\\\\')$/;"	v
 datetime	data_collector.py	/^import datetime$/;"	i
+deg	test.py	/^deg = ["MBA", "BCA", "M.Tech", "MBA"]$/;"	v
 files	sanitise_data.py	/^files = list(map(lambda x: 'channel_data\/' + x, os.listdir('channel_data')))$/;"	v
 get_channel_links	tools.py	/^def get_channel_links():$/;"	f
 get_channel_name	tools.py	/^def get_channel_name(channel_link: str):$/;"	f
+graph_dir	graphs.py	/^graph_dir = 'graphs\/'$/;"	v
 is_broken	channel_statistics.py	/^    def is_broken(self):$/;"	m	class:News_Channel
 is_int	tools.py	/^def is_int(a: str) -> bool:$/;"	f
 lines	sanitise_data.py	/^            lines = f.readlines()$/;"	v
+links	graphs.py	/^links = tools.get_channel_links()[:10]$/;"	v
 logging	data_collector.py	/^import logging$/;"	i
 main	channel_statistics.py	/^def main():$/;"	f
 main	data_collector.py	/^def main():$/;"	f
-new_func	test.py	/^def new_func(a,b):$/;"	f
+main	graphs.py	/^def main():$/;"	f
+matplotlib	graphs.py	/^import matplotlib.pyplot as plt$/;"	i
+nme	test.py	/^nme = ["aparna", "pankaj", "sudhir", "Geeku"]$/;"	v
 os	sanitise_data.py	/^import os$/;"	i
-plt	channel_statistics.py	/^import matplotlib as plt$/;"	i
+pd	graphs.py	/^import pandas as pd$/;"	i
+plt	graphs.py	/^import matplotlib.pyplot as plt$/;"	i
+prettytable	graphs.py	/^import prettytable$/;"	i
+scr	test.py	/^scr = [90, 40, 80, 98]$/;"	v
 scrape_channel_data	data_collector.py	/^def scrape_channel_data(channel_link):$/;"	f
 statistics	channel_statistics.py	/^import statistics$/;"	i
 sys	data_collector.py	/^import sys$/;"	i
 sys	test.py	/^import sys$/;"	i
 tempfile	sanitise_data.py	/^    tempfile = file$/;"	v
 time	data_collector.py	/^import time$/;"	i
-time_range	channel_statistics.py	/^    def time_range(self):$/;"	m	class:News_Channel
+time_ranges	graphs.py	/^def time_ranges():$/;"	f
 tools	channel_statistics.py	/^import tools$/;"	i
 tools	data_collector.py	/^import tools$/;"	i
+tools	graphs.py	/^import tools$/;"	i
 tools	test.py	/^import tools$/;"	i
 traceback	channel_statistics.py	/^import traceback$/;"	i
+video_count_graph	graphs.py	/^def video_count_graph():$/;"	f
+views_graph	graphs.py	/^def views_graph():$/;"	f
 wait_till_visible_xpath	data_collector.py	/^def wait_till_visible_xpath(driver,xpath):$/;"	f
 webdriver	data_collector.py	/^from selenium import webdriver$/;"	i
 webdriver	test.py	/^from selenium import webdriver$/;"	i
