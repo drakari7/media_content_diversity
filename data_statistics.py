@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import prettytable
 
-import channel_statistics
+import channel_class
 import tools
 
 
@@ -16,7 +16,7 @@ def views_graph():
     channel_names = []
 
     for link in links:
-        channel = channel_statistics.News_Channel(link)
+        channel = channel_class.News_Channel(link)
         views_arr.append(channel.average_views())
         channel_names.append(channel.channel_name)
     
@@ -33,7 +33,7 @@ def video_count_graph():
     channel_names = []
 
     for link in links:
-        channel = channel_statistics.News_Channel(link)
+        channel = channel_class.News_Channel(link)
         vid_counts.append(channel.video_count)
         channel_names.append(channel.channel_name)
     
@@ -50,7 +50,7 @@ def time_ranges():
     channel_names = []
 
     for link in links:
-        channel = channel_statistics.News_Channel(link)
+        channel = channel_class.News_Channel(link)
         times.append(channel.time_range)
         channel_names.append(channel.channel_name)
     
