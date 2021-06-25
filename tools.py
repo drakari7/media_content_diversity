@@ -1,5 +1,3 @@
-### Contains different functions that are used throughout the code
-
 ## returns the name of the channel from its youtube link
 def get_channel_name(channel_link: str):
     channel_name = channel_link.split('/')[4]
@@ -16,6 +14,8 @@ def get_channel_links():
         channel_links.extend( [link[:-1] for link in f2.readlines()])
     return channel_links
 
+def get_testing_channel():
+    return [ 'https://www.youtube.com/c/TodayontheKoreanServer/videos' ]
 
 ## check if a string can be converted to int
 def is_int(a: str) -> bool:
@@ -24,4 +24,15 @@ def is_int(a: str) -> bool:
         return True
     except ValueError:
         return False
+
+
+#----------------Testing----------------
+def main():
+    channels = get_testing_channel()
+    print(channels)
+    pass
+
+
+if __name__ == "__main__":
+    main()
 

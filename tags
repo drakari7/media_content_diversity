@@ -10,37 +10,43 @@ Dict	channel_class.py	/^from typing import List, Dict$/;"	i
 EC	data_collector.py	/^from selenium.webdriver.support import expected_conditions as EC$/;"	i
 EC	test.py	/^from selenium.webdriver.support import expected_conditions as EC$/;"	i
 List	channel_class.py	/^from typing import List, Dict$/;"	i
+List	data_collector.py	/^from typing import List$/;"	i
 News_Channel	channel_class.py	/^class News_Channel:$/;"	c
-Options	data_collector.py	/^from selenium.webdriver.chrome.options import Options$/;"	i
 Options	test.py	/^from selenium.webdriver.chrome.options import Options$/;"	i
-PATH	data_collector.py	/^PATH = "\/Applications\/chromedriver"$/;"	v
 WebDriverWait	data_collector.py	/^from selenium.webdriver.support.ui import WebDriverWait$/;"	i
 WebDriverWait	test.py	/^from selenium.webdriver.support.ui import WebDriverWait$/;"	i
 __init__	channel_class.py	/^    def __init__(self, link):$/;"	m	class:News_Channel
 average_views	channel_class.py	/^    def average_views(self) -> float:$/;"	m	class:News_Channel
-channel_class	graphs.py	/^import channel_class$/;"	i
+cOptions	data_collector.py	/^from selenium.webdriver.chrome.options import Options as cOptions$/;"	i
+channel_class	data_statistics.py	/^import channel_class$/;"	i
 check	test.py	/^check = {'name': nme, 'degree': deg, 'score': scr} $/;"	v
 chunks	sanitise_data.py	/^                chunks = line.split('\\\\#\\\\')$/;"	v
 datetime	data_collector.py	/^import datetime$/;"	i
 deg	test.py	/^deg = ["MBA", "BCA", "M.Tech", "MBA"]$/;"	v
+fOptions	data_collector.py	/^from selenium.webdriver.firefox.options import Options as fOptions$/;"	i
 files	sanitise_data.py	/^files = list(map(lambda x: 'channel_data\/' + x, os.listdir('channel_data')))$/;"	v
 get_channel_links	tools.py	/^def get_channel_links():$/;"	f
 get_channel_name	tools.py	/^def get_channel_name(channel_link: str):$/;"	f
-graph_dir	graphs.py	/^graph_dir = 'graphs\/'$/;"	v
+get_driver	data_collector.py	/^def get_driver():$/;"	f
+get_testing_channel	tools.py	/^def get_testing_channel():$/;"	f
+get_urls	data_collector.py	/^def get_urls(driver, channel_name, time_range) -> (List[str], List[str]):$/;"	f
+graph_dir	data_statistics.py	/^graph_dir = 'graphs\/'$/;"	v
 is_broken	channel_class.py	/^    def is_broken(self):$/;"	m	class:News_Channel
 is_int	tools.py	/^def is_int(a: str) -> bool:$/;"	f
 lines	sanitise_data.py	/^            lines = f.readlines()$/;"	v
-links	graphs.py	/^links = tools.get_channel_links()[:10]$/;"	v
+links	data_statistics.py	/^links = tools.get_channel_links()[:10]$/;"	v
 logging	data_collector.py	/^import logging$/;"	i
 main	channel_class.py	/^def main():$/;"	f
 main	data_collector.py	/^def main():$/;"	f
-main	graphs.py	/^def main():$/;"	f
-matplotlib	graphs.py	/^import matplotlib.pyplot as plt$/;"	i
+main	data_statistics.py	/^def main():$/;"	f
+main	tools.py	/^def main():$/;"	f
+matplotlib	data_statistics.py	/^import matplotlib.pyplot as plt$/;"	i
 nme	test.py	/^nme = ["aparna", "pankaj", "sudhir", "Geeku"]$/;"	v
 os	sanitise_data.py	/^import os$/;"	i
-pd	graphs.py	/^import pandas as pd$/;"	i
-plt	graphs.py	/^import matplotlib.pyplot as plt$/;"	i
-prettytable	graphs.py	/^import prettytable$/;"	i
+pd	data_statistics.py	/^import pandas as pd$/;"	i
+plt	data_statistics.py	/^import matplotlib.pyplot as plt$/;"	i
+prettytable	data_statistics.py	/^import prettytable$/;"	i
+process_urls	data_collector.py	/^def process_urls(driver, channel_name, file_name, urls, titles) -> None:$/;"	f
 scr	test.py	/^scr = [90, 40, 80, 98]$/;"	v
 scrape_channel_data	data_collector.py	/^def scrape_channel_data(channel_link):$/;"	f
 statistics	channel_class.py	/^import statistics$/;"	i
@@ -48,14 +54,14 @@ sys	data_collector.py	/^import sys$/;"	i
 sys	test.py	/^import sys$/;"	i
 tempfile	sanitise_data.py	/^    tempfile = file$/;"	v
 time	data_collector.py	/^import time$/;"	i
-time_ranges	graphs.py	/^def time_ranges():$/;"	f
+time_ranges	data_statistics.py	/^def time_ranges():$/;"	f
 tools	channel_class.py	/^import tools$/;"	i
 tools	data_collector.py	/^import tools$/;"	i
-tools	graphs.py	/^import tools$/;"	i
+tools	data_statistics.py	/^import tools$/;"	i
 tools	test.py	/^import tools$/;"	i
 traceback	channel_class.py	/^import traceback$/;"	i
-video_count_graph	graphs.py	/^def video_count_graph():$/;"	f
-views_graph	graphs.py	/^def views_graph():$/;"	f
-wait_till_visible_xpath	data_collector.py	/^def wait_till_visible_xpath(driver,xpath):$/;"	f
+video_count_graph	data_statistics.py	/^def video_count_graph():$/;"	f
+views_graph	data_statistics.py	/^def views_graph():$/;"	f
+wait_till_visible_xpath	data_collector.py	/^def wait_till_visible_xpath(driver, xpath):$/;"	f
 webdriver	data_collector.py	/^from selenium import webdriver$/;"	i
 webdriver	test.py	/^from selenium import webdriver$/;"	i

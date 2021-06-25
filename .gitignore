@@ -1,6 +1,10 @@
 logs
+data_collection_logs
 test.py
 test.txt
 tags
 __pycache__
 .DS_Store
+adblockplus.crx
+geckodriver.log
+channel_data/TodayontheKoreanServer.hsv
