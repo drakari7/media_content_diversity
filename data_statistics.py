@@ -16,10 +16,10 @@ def views_graph():
     channel_names = []
 
     for link in links:
-        channel = channel_class.News_Channel(link)
+        channel = channel_class.NewsChannel(link)
         views_arr.append(channel.average_views())
         channel_names.append(channel.channel_name)
-    
+
     plt.figure()
     plt.barh(channel_names, views_arr)
     plt.xlabel('Avg no. of views')
@@ -33,10 +33,10 @@ def video_count_graph():
     channel_names = []
 
     for link in links:
-        channel = channel_class.News_Channel(link)
+        channel = channel_class.NewsChannel(link)
         vid_counts.append(channel.video_count)
         channel_names.append(channel.channel_name)
-    
+
     plt.figure()
     plt.barh(channel_names, vid_counts)
     plt.xlabel('No. of videos')
@@ -45,16 +45,17 @@ def video_count_graph():
     plt.savefig(graph_dir + 'vid_count.jpg')
 
 
-def time_ranges():
+def time_ranges():      #Time range in which the data has been collected
     times = []
     channel_names = []
 
     for link in links:
-        channel = channel_class.News_Channel(link)
+        channel = channel_class.NewsChannel(link)
         times.append(channel.time_range)
         channel_names.append(channel.channel_name)
-    
-    df = pd.DataFrame(list(zip(channel_names,times)), columns=['Channel name', 'Time range'])
+
+    df = pd.DataFrame(list(zip(channel_names, times)),
+                      columns=['Channel name', 'Time range'])
 
     table = prettytable.PrettyTable()
     table.add_column('Channel name', channel_names)
@@ -67,7 +68,6 @@ def main():
     # video_count_graph()
     time_ranges()
 
+
 if __name__ == '__main__':
     main()
-    
-
