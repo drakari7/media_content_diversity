@@ -1,6 +1,7 @@
 import time
 import logging
-import sys
+import concurrent.futures
+import multiprocessing
 from typing import List
 
 from selenium import webdriver
@@ -14,7 +15,7 @@ from selenium.webdriver.firefox.options import Options as fOptions
 import tools
 
 # logger options
-logging.basicConfig(filename='data_collection_logs', filemode='w',
+logging.basicConfig(filename='logs_data_collection', filemode='w',
                     level=logging.INFO)
 
 
@@ -28,8 +29,8 @@ def wait_till_visible_xpath(driver, xpath):
 # Driver setup and options
 def get_driver(browser: str):
     if browser == "chrome":
-        DRIVER_PATH = "/Applications/chromedriver"
-        # ADBLOCK_PATH = "/Users/shreyash/thesis/extensions/adblockplus.crx"
+        DRIVER_PATH = "./drivers/chromedriver"
+        # ADBLOCK_PATH = ""
         options = cOptions()
         options.add_argument('--headless')
         options.add_argument('--mute-audio')
@@ -39,13 +40,13 @@ def get_driver(browser: str):
         driver = webdriver.Chrome(DRIVER_PATH, options=options)
 
     elif browser == "firefox":
-        DRIVER_PATH = "/usr/local/Cellar/geckodriver"
-        ADBLOCK_PATH = "/Users/shreyash/thesis/extensions/ublock_origin.xpi"
+        DRIVER_PATH = "./drivers/geckodriver"
+        # ADBLOCK_PATH = "./extensions/ublock_origin.xpi"
         options = fOptions()
         options.add_argument('--headless')
         options.add_argument('--mute-audio')
         driver = webdriver.Firefox(DRIVER_PATH, options=options)
-        driver.install_addon(ADBLOCK_PATH)
+        # driver.install_addon(ADBLOCK_PATH)
 
     else:
         raise Exception("That browser is not valid")
@@ -75,11 +76,34 @@ def get_urls(driver, channel_name, time_range):
     logging.info("Collecting urls for channel {}".format(channel_name))
 
     # Scrolling down until we have the urls of all the videos in the time range
+    prev_time = posting_time[-1].text
+    c1, c2 = 0, 0
     while posting_time[-1].text != time_range:
         driver.execute_script("window.scrollBy(0,5000);")   # Scroll down
-        posting_time = driver.find_elements_by_xpath(posting_time_xpath)
-        logging.info("Collected {0} URLs".format(len(posting_time)))
-        time.sleep(0.2)     # Give time to load
+
+        try:
+            posting_time = driver.find_elements_by_xpath(posting_time_xpath)
+            c2 = 0
+        except:
+            c2 += 1
+            logging.info(f"Uknown error in URL collection - {channel_name}")
+            if c2 == 20:
+                logging.info(f"Can't find URLs, stopping collection - {channel_name}")
+                break
+            continue
+
+        logging.info("Collected {0} URLs - {1}".format(len(posting_time), channel_name))
+
+        if prev_time == posting_time[-1].text:  # Break out of loop if stuck
+            c1 += 1
+            if c1 == 20:
+                logging.info(f"Force stopped collection of URLs - {channel_name}")
+                break
+        else:
+            c1 = 0
+            prev_time = posting_time[-1].text
+
+        time.sleep(0.15)     # Give time to load
 
     # Collecting all relevant video urls
     titles = driver.find_elements_by_id("video-title")
@@ -98,12 +122,12 @@ def process_urls(driver, channel_name, file_name, urls) -> None:
             try:
                 line = _process_url(driver, url)
             except:
-                logging.info("Corrupted URL : {0}".format(url))
+                logging.info("Corrupted URL : {0}, video no. {1}, {2}".format(url, idx, channel_name))
                 skipped_videos_count += 1
                 continue
 
             print(line, file=write_file)
-            logging.info("Video No. {0} processed: URL - {1}".format(idx, url))
+            logging.info("Video No. {0} processed for {1}".format(idx, channel_name))
 
     print("Total videos skipped for channel {0} = {1}".format(channel_name, skipped_videos_count))
 
@@ -123,8 +147,8 @@ def _process_url(driver, url):
     # wait_till_visible_xpath(date_xpath)
     date = driver.find_element_by_xpath(date_xpath).text
 
-    duration_xpath = "//span[@class='ytp-time-duration']"
-    duration = driver.find_element_by_xpath(duration_xpath).text
+    # duration_xpath = "//span[@class='ytp-time-duration']"
+    # duration = driver.find_element_by_xpath(duration_xpath).text
 
     keywords = driver.find_element_by_name("keywords")
     keywords = keywords.get_attribute("content")
@@ -134,43 +158,41 @@ def _process_url(driver, url):
     description = driver.find_element_by_xpath(description_xpath).text
     description = ' '.join(description.splitlines())
 
-    return '\\#\\'.join([title, views, date, duration, keywords, description])
+    return '\\#\\'.join([title, views, date, keywords, description])
 
 
 def scrape_channel_data(channel_link):
-    cs_time = time.time()
+    cs_time = time.perf_counter()
 
     channel_name = tools.get_channel_name(channel_link)         # Output file handling
     file_name = 'channel_data/' + channel_name + '.hsv'
 
-    with get_driver("chrome") as driver:
+    with get_driver(browser="chrome") as driver:
         driver.get(channel_link)
         video_urls, _ = get_urls(driver, channel_name, time_range="3 months ago")
 
-        elapsed_time = time.time() - cs_time
-        print("Total number of urls found for channel {0} = {1} in {2} seconds".format(channel_name, len(video_urls),  elapsed_time))
+        elapsed_time = time.perf_counter() - cs_time
+        print("Total number of urls found for channel {0} = {1} in {2}".format(channel_name, len(video_urls),  tools.format_time(elapsed_time)))
 
         process_urls(driver, channel_name, file_name, video_urls)
+
+        final_time = time.perf_counter() - cs_time
+        print("Total time taken for channel {0} = {1}".format(channel_name, tools.format_time(final_time)))
 
 
 # ------------------ Start of Main Code -------------------------------
 def main():
-    g_start = time.time()
+    g_start = time.perf_counter()
 
-    # channels = tools.get_channel_links()[0:2]
-    channels = tools.get_testing_channel()              # Uncomment for testing
+    channels = tools.get_channel_links()[4:9]
+    # channels = tools.get_testing_channel()              # Uncomment for testing
 
-    for channel in channels:
-        channel_name = tools.get_channel_name(channel)
+    with concurrent.futures.ThreadPoolExecutor() as executor:
+        executor.map(scrape_channel_data, channels)
 
-        t_start = time.time()
-        scrape_channel_data(channel)
-        t_end = time.time()
 
-        print("Time taken for channel {0} = {1} s".format(channel_name, t_end-t_start))
-
-    g_end = time.time()
-    print("Total time = {}".format(g_end - g_start))
+    g_end = time.perf_counter()
+    print("Total overall time = {}".format(tools.format_time(g_end - g_start)))
 
 
 if __name__ == "__main__":

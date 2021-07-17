@@ -29,6 +29,15 @@ def is_int(x: str) -> bool:
         return False
 
 
+# Convert seconds to hr, min, seconds format 
+def format_time(t):
+    t = int(t)
+    h, m, s = t//3600, (t//60)%60, t%60
+    if h == 0:
+        return str(m) + " mins, " + str(s) + " s"
+    else:
+        return str(h) + " hrs, " + str(m) + " mins, " + str(s) + " s"
+
 # ----------------Testing----------------
 def main():
     channels = get_testing_channel()
