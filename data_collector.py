@@ -1,7 +1,6 @@
 import time
 import logging
-import sys
-from typing import List
+# import sys
 
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -12,9 +11,8 @@ from selenium.webdriver.firefox.options import Options as fOptions
 
 # local imports
 import tools
-
 # logger options
-logging.basicConfig(filename='data_collection_logs', filemode='w',
+logging.basicConfig(filename='logs_data_collection', filemode='w',
                     level=logging.INFO)
 
 
@@ -48,7 +46,7 @@ def get_driver(browser: str):
         driver.install_addon(ADBLOCK_PATH)
 
     else:
-        raise Exception("That browser is not valid")
+        raise Exception("That browser is not supported")
 
     time.sleep(5)           # Time for installing adblock
     return driver
@@ -105,7 +103,8 @@ def process_urls(driver, channel_name, file_name, urls) -> None:
             print(line, file=write_file)
             logging.info("Video No. {0} processed: URL - {1}".format(idx, url))
 
-    print("Total videos skipped for channel {0} = {1}".format(channel_name, skipped_videos_count))
+    print("Total videos skipped for channel {0} = {1}"
+            .format(channel_name, skipped_videos_count))
 
 # Actually scraping the data
 def _process_url(driver, url):
@@ -148,7 +147,8 @@ def scrape_channel_data(channel_link):
         video_urls, _ = get_urls(driver, channel_name, time_range="3 months ago")
 
         elapsed_time = time.time() - cs_time
-        print("Total number of urls found for channel {0} = {1} in {2} seconds".format(channel_name, len(video_urls),  elapsed_time))
+        print("Total number of urls found for channel {0} = {1} in {2} seconds"
+                .format(channel_name, len(video_urls),  elapsed_time))
 
         process_urls(driver, channel_name, file_name, video_urls)
 
@@ -167,7 +167,8 @@ def main():
         scrape_channel_data(channel)
         t_end = time.time()
 
-        print("Time taken for channel {0} = {1} s".format(channel_name, t_end-t_start))
+        print("Time taken for channel {0} = {1} s"
+                .format(channel_name, t_end-t_start))
 
     g_end = time.time()
     print("Total time = {}".format(g_end - g_start))
