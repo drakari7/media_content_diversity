@@ -1,8 +1,6 @@
 # returns the name of the channel from its youtube link
 def get_channel_name(channel_link: str):
     channel_name = channel_link.split('/')[4]
-    if channel_name == "videos":
-        channel_name = channel_link.split('/')[3]
     return channel_name
 
 
@@ -14,6 +12,11 @@ def get_channel_links():
     with open("hindi_channels_ytlinks", "r") as file2:
         channel_links.extend([link[:-1] for link in file2.readlines()])
     return channel_links
+
+def temp_get_channels():
+    chans = get_channel_links()
+    chans = chans[4:5] + chans[6:7]
+    return chans
 
 
 def get_testing_channel():
@@ -30,7 +33,7 @@ def is_int(x: str) -> bool:
 
 
 # Convert seconds to hr, min, seconds format 
-def format_time(t):
+def format_time(t: float):
     t = int(t)
     h, m, s = t//3600, (t//60)%60, t%60
     if h == 0:

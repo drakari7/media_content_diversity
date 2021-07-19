@@ -1,7 +1,6 @@
 import time
 import logging
 import concurrent.futures
-import multiprocessing
 from typing import List
 
 from selenium import webdriver
@@ -51,7 +50,7 @@ def get_driver(browser: str):
     else:
         raise Exception("That browser is not valid")
 
-    time.sleep(5)           # Time for installing adblock
+    # time.sleep(5)           # Time for installing adblock
     return driver
 
 
@@ -70,44 +69,57 @@ def get_urls(driver, channel_name, time_range):
     try:
         wait_till_visible_xpath(driver, posting_time_xpath)
     except:
-        logging.info("Could not load {0}'s youtube page properly".format(channel_name))
-    posting_time = driver.find_elements_by_xpath(posting_time_xpath)
+        logging.exception("Could not load {0}'s youtube page properly".format(channel_name))
 
+    posting_time = driver.find_elements_by_xpath(posting_time_xpath)
     logging.info("Collecting urls for channel {}".format(channel_name))
 
     # Scrolling down until we have the urls of all the videos in the time range
-    prev_time = posting_time[-1].text
-    c1, c2 = 0, 0
+    last_vid = posting_time[-1]
+    c1, c2,  c3 = 0, 0, 0
     while posting_time[-1].text != time_range:
         driver.execute_script("window.scrollBy(0,5000);")   # Scroll down
 
         try:
             posting_time = driver.find_elements_by_xpath(posting_time_xpath)
-            c2 = 0
+            c1 = 0
         except:
-            c2 += 1
-            logging.info(f"Uknown error in URL collection - {channel_name}")
-            if c2 == 20:
-                logging.info(f"Can't find URLs, stopping collection - {channel_name}")
+            c1 += 1
+            logging.exception(f"Unknown error in URL collection - {channel_name}")
+            if c1 == 10:
+                logging.exception(f"Can't find URLs, stopping collection - {channel_name}")
                 break
             continue
+        
+        if len(posting_time)%1000 >= 0 and len(posting_time)%1000 <= 60:
+            logging.info(f"Last collected date = {posting_time[-1].text}, {len(posting_time)} URLS - {channel_name}")
+        else:
+            logging.info("Collected {0} URLs - {1}".format(len(posting_time), channel_name))
 
-        logging.info("Collected {0} URLs - {1}".format(len(posting_time), channel_name))
-
-        if prev_time == posting_time[-1].text:  # Break out of loop if stuck
-            c1 += 1
-            if c1 == 20:
-                logging.info(f"Force stopped collection of URLs - {channel_name}")
+        if last_vid == posting_time[-1]:  # Break out of loop if stuck
+            c2 += 1
+            if c2 == 10:
+                time.sleep(5)
+                c2 = 0
+                c3 += 1
+            if c3 == 10:
+                logging.warning(f"Stuck at finding new URLs, breaking... - {channel_name}")
                 break
         else:
-            c1 = 0
-            prev_time = posting_time[-1].text
+            c2, c3 = 0, 0
+            last_vid = posting_time[-1]
+        logging.info(c2)
 
         time.sleep(0.15)     # Give time to load
 
     # Collecting all relevant video urls
+    logging.info(f"broke out of posting time collection loop - {channel_name}")
+    t1 = time.perf_counter()
     titles = driver.find_elements_by_id("video-title")
+    t2 = time.perf_counter()
+    logging.info(f"Time taken to collect elements {tools.format_time(t2-t1)} - {channel_name}")
     urls = [title.get_attribute("href") for title in titles]
+    logging.info(f"Time taken to get href links {tools.format_time(time.perf_counter()-t2)} - {channel_name}")
     titles = [i.text for i in titles]
     return (urls, titles)
 
@@ -122,7 +134,7 @@ def process_urls(driver, channel_name, file_name, urls) -> None:
             try:
                 line = _process_url(driver, url)
             except:
-                logging.info("Corrupted URL : {0}, video no. {1}, {2}".format(url, idx, channel_name))
+                logging.exception("Corrupted URL : {0}, video no. {1}, {2}".format(url, idx, channel_name))
                 skipped_videos_count += 1
                 continue
 
@@ -169,7 +181,11 @@ def scrape_channel_data(channel_link):
 
     with get_driver(browser="chrome") as driver:
         driver.get(channel_link)
-        video_urls, _ = get_urls(driver, channel_name, time_range="3 months ago")
+        try:
+            video_urls, _ = get_urls(driver, channel_name, time_range="3 months ago")
+        except:
+            logging.exception(f"Getting URL function failed!")
+            raise
 
         elapsed_time = time.perf_counter() - cs_time
         print("Total number of urls found for channel {0} = {1} in {2}".format(channel_name, len(video_urls),  tools.format_time(elapsed_time)))
@@ -184,7 +200,8 @@ def scrape_channel_data(channel_link):
 def main():
     g_start = time.perf_counter()
 
-    channels = tools.get_channel_links()[4:9]
+    # channels = tools.get_channel_links()[7:10]
+    channels = tools.temp_get_channels()
     # channels = tools.get_testing_channel()              # Uncomment for testing
 
     with concurrent.futures.ThreadPoolExecutor() as executor:
