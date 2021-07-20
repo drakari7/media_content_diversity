@@ -64,7 +64,6 @@ def get_urls(driver, channel_name, time_range):
 
     Returns a tuple (urls, titles) of the videos in the current youtube page
     """
-
     posting_time_xpath = '//*[@id="metadata-line"]/span[2]'
     try:
         wait_till_visible_xpath(driver, posting_time_xpath)
@@ -75,41 +74,16 @@ def get_urls(driver, channel_name, time_range):
     logging.info("Collecting urls for channel {}".format(channel_name))
 
     # Scrolling down until we have the urls of all the videos in the time range
-    last_vid = posting_time[-1]
-    c1, c2,  c3 = 0, 0, 0
     while posting_time[-1].text != time_range:
         driver.execute_script("window.scrollBy(0,5000);")   # Scroll down
 
         try:
             posting_time = driver.find_elements_by_xpath(posting_time_xpath)
-            c1 = 0
         except:
-            c1 += 1
             logging.exception(f"Unknown error in URL collection - {channel_name}")
-            if c1 == 10:
-                logging.exception(f"Can't find URLs, stopping collection - {channel_name}")
-                break
             continue
         
-        if len(posting_time)%1000 >= 0 and len(posting_time)%1000 <= 60:
-            logging.info(f"Last collected date = {posting_time[-1].text}, {len(posting_time)} URLS - {channel_name}")
-        else:
-            logging.info("Collected {0} URLs - {1}".format(len(posting_time), channel_name))
-
-        if last_vid == posting_time[-1]:  # Break out of loop if stuck
-            c2 += 1
-            if c2 == 10:
-                time.sleep(5)
-                c2 = 0
-                c3 += 1
-            if c3 == 10:
-                logging.warning(f"Stuck at finding new URLs, breaking... - {channel_name}")
-                break
-        else:
-            c2, c3 = 0, 0
-            last_vid = posting_time[-1]
-        logging.info(c2)
-
+        logging.info("Collected {0} URLs - {1}".format(len(posting_time), channel_name))
         time.sleep(0.15)     # Give time to load
 
     # Collecting all relevant video urls
@@ -194,8 +168,7 @@ def scrape_channel_data(channel_link):
 def main():
     g_start = time.perf_counter()
 
-    # channels = tools.get_channel_links()[1:2]
-    channels = tools.temp_get_channels()
+    channels = tools.get_channel_links()[1:2]
     # channels = tools.get_testing_channel()              # Uncomment for testing
 
     with concurrent.futures.ThreadPoolExecutor() as executor:

@@ -13,11 +13,6 @@ def get_channel_links():
         channel_links.extend([link[:-1] for link in file2.readlines()])
     return channel_links
 
-def temp_get_channels():
-    chans = get_channel_links()
-    chans = chans[6:10]
-    return chans
-
 
 def get_testing_channel():
     return ['https://www.youtube.com/c/TodayontheKoreanServer/videos']
