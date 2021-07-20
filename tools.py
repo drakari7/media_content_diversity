@@ -15,7 +15,7 @@ def get_channel_links():
 
 def temp_get_channels():
     chans = get_channel_links()
-    chans = chans[4:5] + chans[6:7]
+    chans = chans[6:10]
     return chans
 
 

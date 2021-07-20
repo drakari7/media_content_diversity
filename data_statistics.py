@@ -54,8 +54,8 @@ def time_ranges():      #Time range in which the data has been collected
         times.append(channel.time_range)
         channel_names.append(channel.channel_name)
 
-    df = pd.DataFrame(list(zip(channel_names, times)),
-                      columns=['Channel name', 'Time range'])
+    # df = pd.DataFrame(list(zip(channel_names, times)),
+    #                   columns=['Channel name', 'Time range'])
 
     table = prettytable.PrettyTable()
     table.add_column('Channel name', channel_names)

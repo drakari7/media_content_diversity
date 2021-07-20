@@ -20,7 +20,7 @@ class NewsChannel:
     def __init__(self, link):
         self.channel_link = link
         self.channel_name = tools.get_channel_name(self.channel_link)
-        channel_data_file = "channel_data/" + self.channel_name + ".csv"
+        channel_data_file = "channel_data/" + self.channel_name + ".hsv"
 
         with open(channel_data_file, "r") as file:
             self.channel_data = [line[:-1].split("\\#\\")
@@ -52,7 +52,7 @@ def main():
 
     for link in test_links:
         test_channel = NewsChannel(link)
-        print(test_channel.video_count)
+        print(test_channel.time_range)
 
 
 if __name__ == "__main__":
