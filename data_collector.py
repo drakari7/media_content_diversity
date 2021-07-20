@@ -12,7 +12,6 @@ from selenium.webdriver.firefox.options import Options as fOptions
 
 # local imports
 import tools
-
 # logger options
 logging.basicConfig(filename='logs_data_collection', filemode='w',
                     level=logging.INFO)
@@ -48,7 +47,7 @@ def get_driver(browser: str):
         # driver.install_addon(ADBLOCK_PATH)
 
     else:
-        raise Exception("That browser is not valid")
+        raise Exception("That browser is not supported")
 
     # time.sleep(5)           # Time for installing adblock
     return driver
@@ -110,7 +109,8 @@ def process_urls(driver, channel_name, file_name, urls) -> None:
             print(line, file=write_file)
             logging.info("Video No. {0} processed for {1}".format(idx, channel_name))
 
-    print("Total videos skipped for channel {0} = {1}".format(channel_name, skipped_videos_count))
+    print("Total videos skipped for channel {0} = {1}"
+            .format(channel_name, skipped_videos_count))
 
 # Actually scraping the data
 def _process_url(driver, url):
@@ -145,7 +145,7 @@ def scrape_channel_data(channel_link):
     cs_time = time.perf_counter()
 
     channel_name = tools.get_channel_name(channel_link)         # Output file handling
-    file_name = 'channel_data/' + channel_name + '.tmp'
+    file_name = 'channel_data/' + channel_name + '.hsv'
 
     with get_driver(browser="chrome") as driver:
         driver.get(channel_link)

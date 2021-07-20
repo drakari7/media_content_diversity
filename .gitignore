@@ -1,6 +1,5 @@
 logs
 data_collection_logs
-logs_data_collection
 test.py
 test.txt
 tags
@@ -10,3 +9,4 @@ adblockplus.crx
 geckodriver.log
 channel_data/TodayontheKoreanServer.hsv
 drivers
+logs_data_collection
