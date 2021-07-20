@@ -176,7 +176,7 @@ def scrape_channel_data(channel_link):
     with get_driver(browser="chrome") as driver:
         driver.get(channel_link)
         try:
-            video_urls, _ = get_urls(driver, channel_name, time_range="2 days ago")
+            video_urls, _ = get_urls(driver, channel_name, time_range="3 days ago")
         except:
             logging.exception(f"Getting URL function failed! - {channel_name}")
             raise
