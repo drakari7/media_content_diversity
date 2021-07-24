@@ -3,11 +3,11 @@ import pandas as pd
 import prettytable
 
 import channel_class
-import tools
+import tools as tl
 
 
 graph_dir = 'graphs/'
-links = tools.get_channel_links()[:10]
+links = tl.get_channel_links()[:10]
 plt.style.use('ggplot')
 
 

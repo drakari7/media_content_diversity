@@ -1,11 +1,10 @@
 # Importing libraries
 import statistics
-# import traceback
 
 from typing import List
 
 # local imports
-import tools
+import tools as tl
 
 
 class NewsChannel:
@@ -15,11 +14,11 @@ class NewsChannel:
     video_count:    int                 # Number of videos
     content_tags:   List[str]           # Keyword descriptions
     time_range:     str                 # Range in which data was collected
-    descriptions:   List[str]           # Video descriptions
+    description:   List[str]           # Video descriptions
 
     def __init__(self, link):
         self.channel_link = link
-        self.channel_name = tools.get_channel_name(self.channel_link)
+        self.channel_name = tl.get_channel_name(self.channel_link)
         channel_data_file = "channel_data/" + self.channel_name + ".hsv"
 
         with open(channel_data_file, "r") as file:
@@ -28,7 +27,7 @@ class NewsChannel:
 
         self.video_count = len(self.channel_data)
         self.content_tags = [line[3] for line in self.channel_data]
-        self.descriptions = [line[4] for line in self.channel_data]
+        self.description = [line[4] for line in self.channel_data]
         self.time_range = self.channel_data[-1][2]\
                           + " - " + self.channel_data[0][2]
 
@@ -36,7 +35,7 @@ class NewsChannel:
     def average_views(self) -> float:
         views_arr = [line[1] for line in self.channel_data]
         views_arr = [view.split()[0].replace(',', '') for view in views_arr]
-        views_arr = [int(view) for view in views_arr if tools.is_int(view)]
+        views_arr = [int(view) for view in views_arr if tl.is_int(view)]
         return round(statistics.mean(views_arr), 2)
 
     # Checks if all lines of data are in correct format
@@ -48,11 +47,11 @@ class NewsChannel:
 
 # For testing purposes
 def main():
-    test_links = tools.get_channel_links()[:10]
+    test_links = tl.get_channel_links()
 
     for link in test_links:
         test_channel = NewsChannel(link)
-        print(test_channel.time_range)
+        test_channel.is_broken
 
 
 if __name__ == "__main__":

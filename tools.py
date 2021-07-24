@@ -4,13 +4,21 @@ def get_channel_name(channel_link: str):
     return channel_name
 
 
-# Reads and collects links of youtube channels from their files
-def get_channel_links():
-    with open("english_channels_ytlinks", "r") as file1:
-        channel_links = [link[:-1] for link in file1.readlines()]
+def get_english_links():
+    with open("text_files/english_channels_ytlinks", "r") as file1:
+        links = [link[:-1] for link in file1.readlines()]
+    return links 
 
-    with open("hindi_channels_ytlinks", "r") as file2:
-        channel_links.extend([link[:-1] for link in file2.readlines()])
+
+def get_hindi_links():
+    with open("text_files/hindi_channels_ytlinks", "r") as file1:
+        links = [link[:-1] for link in file1.readlines()]
+    return links 
+
+
+# Reads returns all channel links
+def get_channel_links():
+    channel_links = get_english_links() + get_hindi_links()
     return channel_links
 
 
@@ -36,9 +44,10 @@ def format_time(t: float):
     else:
         return str(h) + " hrs, " + str(m) + " mins, " + str(s) + " s"
 
+
 # ----------------Testing----------------
 def main():
-    channels = get_testing_channel()
+    channels = get_channel_links()
     print(channels)
 
 
