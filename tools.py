@@ -23,7 +23,7 @@ def get_channel_links():
 
 def get_temp_links():
     links = get_channel_links()
-    links = links[8:9]
+    links = links[0:1] + links[2:]
     return links
 
 def get_testing_channel():

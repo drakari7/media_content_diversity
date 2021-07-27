@@ -147,13 +147,13 @@ def scrape_channel_data(channel_link):
     cs_time = time.perf_counter()
 
     channel_name = tl.get_channel_name(channel_link)    # Output file handling
-    file_name = 'channel_data/' + channel_name + '.hsv'
+    file_name = 'channel_data/' + channel_name + '.tmp'
 
     with get_driver(browser="chrome") as driver:
         driver.get(channel_link)
         try:
             video_urls, _ = get_urls(driver, channel_name, 
-                                     time_range="3 months ago")
+                                     time_range="2 days ago")
         except:
             logging.exception(f"Getting URL function failed! - {channel_name}")
             raise
@@ -174,6 +174,7 @@ def scrape_channel_data(channel_link):
 def main():
     g_start = time.perf_counter()
 
+    # channels = tl.get_channel_links()[1:2]
     channels = tl.get_temp_links()
     # channels = tl.get_testing_channel()        # Uncomment for testing
 
