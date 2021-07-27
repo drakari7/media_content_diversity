@@ -66,8 +66,7 @@ def get_urls(driver, channel_name, time_range):
     try:
         wait_till_visible_xpath(driver, posting_time_xpath)
     except:
-        logging.exception(f"Could not load {channel_name}'s \
-                            youtube page properly")
+        logging.exception(f"Could not load {channel_name}'s youtube page properly")
     posting_time = driver.find_elements_by_xpath(posting_time_xpath)
     logging.info(f"Collecting urls for channel {channel_name}")
 
@@ -78,15 +77,17 @@ def get_urls(driver, channel_name, time_range):
         try:
             posting_time = driver.find_elements_by_xpath(posting_time_xpath)
         except:
-            logging.exception(f"Unknown error in \
-                              URL collection - {channel_name}")
+            logging.exception(f"Unknown error in URL collection - {channel_name}")
             continue
 
         logging.info(f"Collected {len(posting_time)} URLs - {channel_name}")
         time.sleep(0.15)     # Give time to load
 
     # Collecting all relevant video urls
+    t1 = time.perf_counter()
     titles = driver.find_elements_by_id("video-title")
+    t2 = time.perf_counter()
+    logging.info(f"time taken to get elements {t2-t1} - {channel_name}")
     urls = [title.get_attribute("href") for title in titles]
     titles = [i.text for i in titles]
     return (urls, titles)
@@ -102,8 +103,7 @@ def process_urls(driver, channel_name, file_name, urls) -> None:
             try:
                 line = _process_url(driver, url)
             except:
-                logging.exception(f"Corrupted URL : {url}, \
-                                    video no. {idx}, {channel_name}")
+                logging.exception(f"Corrupted URL : {url}, video no. {idx}, {channel_name}")
                 skipped_videos_count += 1
                 continue
 
@@ -130,7 +130,7 @@ def _process_url(driver, url):
     date = driver.find_element_by_xpath(date_xpath).get_attribute("innerText")
 
     # duration_xpath = "//span[@class='ytp-time-duration']"
-    # duration = driver.find_element_by_xpath(duration_xpath).text
+    # duration = driver.find_element_by_xpath(duration_xpath).get_attribute("innerText")
 
     keywords = driver.find_element_by_name("keywords")
     keywords = keywords.get_attribute("content")
@@ -153,7 +153,7 @@ def scrape_channel_data(channel_link):
         driver.get(channel_link)
         try:
             video_urls, _ = get_urls(driver, channel_name, 
-                                     time_range="1 day ago")
+                                     time_range="2 days ago")
         except:
             logging.exception(f"Getting URL function failed! - {channel_name}")
             raise
@@ -174,7 +174,8 @@ def scrape_channel_data(channel_link):
 def main():
     g_start = time.perf_counter()
 
-    channels = tl.get_channel_links()[6:7]
+    # channels = tl.get_channel_links()[1:2]
+    channels = tl.get_temp_links()
     # channels = tl.get_testing_channel()        # Uncomment for testing
 
     with concurrent.futures.ThreadPoolExecutor() as executor:
