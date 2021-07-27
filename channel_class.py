@@ -14,7 +14,7 @@ class NewsChannel:
     video_count:    int                 # Number of videos
     content_tags:   List[str]           # Keyword descriptions
     time_range:     str                 # Range in which data was collected
-    description:   List[str]           # Video descriptions
+    description:   List[str]            # Video descriptions
 
     def __init__(self, link):
         self.channel_link = link
@@ -28,8 +28,8 @@ class NewsChannel:
         self.video_count = len(self.channel_data)
         self.content_tags = [line[3] for line in self.channel_data]
         self.description = [line[4] for line in self.channel_data]
-        self.time_range = self.channel_data[-1][2]\
-                          + " - " + self.channel_data[0][2]
+        self.time_range = tl.get_date(self.channel_data[-1][2])\
+                          + " - " + tl.get_date(self.channel_data[0][2])
 
     # Returns the mean of views on the channel
     def average_views(self) -> float:

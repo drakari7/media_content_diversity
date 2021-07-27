@@ -121,13 +121,13 @@ def _process_url(driver, url):
     # Wait for title to load, if can't then throw error
     title_xpath = '//*[@id="container"]/h1/yt-formatted-string'
     wait_till_visible_xpath(driver, title_xpath)
-    title = driver.find_element_by_xpath(title_xpath).text
+    title = driver.find_element_by_xpath(title_xpath).get_attribute("innerText")
 
     views_xpath = '//*[@id="count"]/ytd-video-view-count-renderer/span[1]'
-    views = driver.find_element_by_xpath(views_xpath).text
+    views = driver.find_element_by_xpath(views_xpath).get_attribute("innerText")
 
     date_xpath = '//*[@id="info-strings"]/yt-formatted-string'
-    date = driver.find_element_by_xpath(date_xpath).text
+    date = driver.find_element_by_xpath(date_xpath).get_attribute("innerText")
 
     # duration_xpath = "//span[@class='ytp-time-duration']"
     # duration = driver.find_element_by_xpath(duration_xpath).text
@@ -137,7 +137,7 @@ def _process_url(driver, url):
     keywords = ' '.join(keywords.splitlines())
 
     description_xpath = '//*[@id="description"]/yt-formatted-string'
-    description = driver.find_element_by_xpath(description_xpath).text
+    description = driver.find_element_by_xpath(description_xpath).get_attribute("innerText")
     description = ' '.join(description.splitlines())
 
     return '\\#\\'.join([title, views, date, keywords, description])
@@ -147,13 +147,13 @@ def scrape_channel_data(channel_link):
     cs_time = time.perf_counter()
 
     channel_name = tl.get_channel_name(channel_link)    # Output file handling
-    file_name = 'channel_data/' + channel_name + '.hsv'
+    file_name = 'channel_data/' + channel_name + '.tmp'
 
     with get_driver(browser="chrome") as driver:
         driver.get(channel_link)
         try:
             video_urls, _ = get_urls(driver, channel_name, 
-                                     time_range="3 days ago")
+                                     time_range="1 day ago")
         except:
             logging.exception(f"Getting URL function failed! - {channel_name}")
             raise
@@ -174,7 +174,7 @@ def scrape_channel_data(channel_link):
 def main():
     g_start = time.perf_counter()
 
-    channels = tl.get_channel_links()[1:2]
+    channels = tl.get_channel_links()[6:7]
     # channels = tl.get_testing_channel()        # Uncomment for testing
 
     with concurrent.futures.ThreadPoolExecutor() as executor:

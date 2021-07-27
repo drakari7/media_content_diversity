@@ -12,9 +12,9 @@ WebDriverWait	data_collector.py	/^from selenium.webdriver.support.ui import WebD
 __init__	channel_class.py	/^    def __init__(self, link):$/;"	m	class:NewsChannel
 _process_url	data_collector.py	/^def _process_url(driver, url):$/;"	f
 average_views	channel_class.py	/^    def average_views(self) -> float:$/;"	m	class:NewsChannel
-bk	test.py	/^import nltk.book as bk$/;"	i
 cOptions	data_collector.py	/^from selenium.webdriver.chrome.options import Options as cOptions$/;"	i
 channel_class	data_statistics.py	/^import channel_class$/;"	i
+channels	test.py	/^channels = tl.get_channel_links()[1:2]$/;"	v
 chunks	sanitise_data.py	/^                chunks = line.split('\\\\#\\\\')$/;"	v
 concurrent	data_collector.py	/^import concurrent.futures$/;"	i
 fOptions	data_collector.py	/^from selenium.webdriver.firefox.options import Options as fOptions$/;"	i
@@ -23,6 +23,7 @@ format_time	tools.py	/^def format_time(t: float):$/;"	f
 futures	data_collector.py	/^import concurrent.futures$/;"	i
 get_channel_links	tools.py	/^def get_channel_links():$/;"	f
 get_channel_name	tools.py	/^def get_channel_name(channel_link: str):$/;"	f
+get_date	tools.py	/^def get_date(date: str):$/;"	f
 get_driver	data_collector.py	/^def get_driver(browser: str):$/;"	f
 get_english_links	tools.py	/^def get_english_links():$/;"	f
 get_hindi_links	tools.py	/^def get_hindi_links():$/;"	f
@@ -40,7 +41,6 @@ main	data_collector.py	/^def main():$/;"	f
 main	data_statistics.py	/^def main():$/;"	f
 main	tools.py	/^def main():$/;"	f
 matplotlib	data_statistics.py	/^import matplotlib.pyplot as plt$/;"	i
-nltk	test.py	/^import nltk.book as bk$/;"	i
 os	sanitise_data.py	/^import os$/;"	i
 pd	data_statistics.py	/^import pandas as pd$/;"	i
 plt	data_statistics.py	/^import matplotlib.pyplot as plt$/;"	i
@@ -54,6 +54,7 @@ time_ranges	data_statistics.py	/^def time_ranges():      #Time range in which th
 tl	channel_class.py	/^import tools as tl$/;"	i
 tl	data_collector.py	/^import tools as tl$/;"	i
 tl	data_statistics.py	/^import tools as tl$/;"	i
+tl	test.py	/^import tools as tl$/;"	i
 video_count_graph	data_statistics.py	/^def video_count_graph():$/;"	f
 views_graph	data_statistics.py	/^def views_graph():$/;"	f
 wait_till_visible_xpath	data_collector.py	/^def wait_till_visible_xpath(driver, xpath):$/;"	f

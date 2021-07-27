@@ -45,6 +45,13 @@ def format_time(t: float):
         return str(h) + " hrs, " + str(m) + " mins, " + str(s) + " s"
 
 
+def get_date(date: str):
+    temp = date.split()
+    if temp[0] == "Premiered":
+        temp = temp[1:]
+
+    return ' '.join(temp)
+
 # ----------------Testing----------------
 def main():
     channels = get_channel_links()
