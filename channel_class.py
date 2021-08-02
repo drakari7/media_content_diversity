@@ -1,6 +1,5 @@
 # Importing libraries
 import statistics
-
 from typing import List
 
 # local imports
@@ -11,17 +10,18 @@ class NewsChannel:
     channel_link:   str                 # Link to the youtube channel
     channel_name:   str                 # Name of the channel
     channel_data:   List[List[str]]     # Extracted data lines
+    data_file_path: str                 # relative path to the data file
     video_count:    int                 # Number of videos
     content_tags:   List[str]           # Keyword descriptions
-    time_range:     str                 # Range in which data was collected
-    description:   List[str]            # Video descriptions
+    description:    List[str]           # Video descriptions
+    time_range:     str                 # date range in which data was collected
 
     def __init__(self, link):
         self.channel_link = link
         self.channel_name = tl.get_channel_name(self.channel_link)
-        channel_data_file = "channel_data/" + self.channel_name + ".hsv"
+        self.data_file_path = "channel_data/" + self.channel_name + ".hsv"
 
-        with open(channel_data_file, "r") as file:
+        with open(self.data_file_path, "r") as file:
             self.channel_data = [line[:-1].split("\\#\\")
                                  for line in file.readlines()]
 
@@ -42,7 +42,7 @@ class NewsChannel:
     def is_broken(self):
         for index, line in enumerate(self.channel_data):
             if len(line) < 5:
-                print(index + 1, len(line))
+                print(index + 1, len(line), self.channel_name)
 
 
 # For testing purposes
@@ -51,7 +51,7 @@ def main():
 
     for link in test_links:
         test_channel = NewsChannel(link)
-        test_channel.is_broken
+        test_channel.is_broken()
 
 
 if __name__ == "__main__":

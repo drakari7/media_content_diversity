@@ -22,9 +22,10 @@ def get_channel_links():
     return channel_links
 
 def get_temp_links():
-    links = get_channel_links()
-    links = links[0:1] + links[2:]
+    links = get_hindi_links()
+    links = links[2:3]
     return links
+
 
 def get_testing_channel():
     return ['https://www.youtube.com/c/TodayontheKoreanServer/videos']
@@ -59,6 +60,10 @@ def get_date(date: str):
 # ----------------Testing----------------
 def main():
     k = get_temp_links()
+    l = get_hindi_links()
+
+    for i, lin in enumerate(l):
+        print(i, get_channel_name(lin))
 
     for i, lin in enumerate(k):
         print(i, get_channel_name(lin))
