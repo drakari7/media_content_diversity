@@ -22,8 +22,8 @@ def get_channel_links():
     return channel_links
 
 def get_temp_links():
-    links = get_hindi_links()
-    links = links[2:3]
+    links = get_channel_links()
+    links = links[6:7]
     return links
 
 
@@ -60,7 +60,7 @@ def get_date(date: str):
 # ----------------Testing----------------
 def main():
     k = get_temp_links()
-    l = get_hindi_links()
+    l = get_channel_links()
 
     for i, lin in enumerate(l):
         print(i, get_channel_name(lin))
