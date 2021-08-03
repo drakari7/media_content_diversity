@@ -27,9 +27,8 @@ for link in links:
 
     with open(write_file, 'w') as wf:
         for line_no, line in enumerate(lines[:], start=1):
-            pattern = r"AajTak Live :"
+            pattern = r"About Us: IndiaTV is the country's most trusted Hindi News Channel"
             chunks = re.split(pattern, line)
-            # check = re.search(r"\\#\\$", line)
 
             temp = ' '.join(chunks[0].splitlines()).rstrip()
             print(temp, file=wf)
@@ -37,8 +36,5 @@ for link in links:
             if len(chunks) > 1:
                 count += 1
                 # print(line_no)
-
-            # if check:
-            #     count += 1
 
     print(count)

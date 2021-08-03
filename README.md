@@ -29,5 +29,5 @@ Some of the observed statistics up until now are presented here.
 ![Graph showing the number of videos by each channel](./graphs/vid_count.jpg "Number of Videos")
 ![Graph showing traffic at each channel](./graphs/views.jpg "Channel traffic")
 
-##
+## Acknowledgements
 This is my (Shreyash Ravi) thesis work done under the guidance of professor Nisheeth Srivastava at the department of computer science and engineering, IIT Kanpur. 
