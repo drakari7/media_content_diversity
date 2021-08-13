@@ -1,17 +1,18 @@
 import re, unicodedata
-import nltk
 import contractions
 import inflect
+from collections import OrderedDict
 from nltk.corpus import stopwords
-from nltk.stem import LancasterStemmer, WordNetLemmatizer
+from nltk.tokenize import word_tokenize, sent_tokenize
+from nltk.tag import pos_tag
 
 def replace_contractions(text):
     """Replace contractions in string of text"""
     return contractions.fix(text)
 
-def remove_URL(sample):
+def remove_URL(text):
     """Remove URLs from a sample string"""
-    return re.sub(r"http\S+", "", sample)
+    return re.sub(r"http\S+", "", text)
 
 def remove_non_ascii(words):
     """Remove non-ASCII characters from list of tokenized words"""
@@ -28,6 +29,11 @@ def to_lowercase(words):
         new_word = word.lower()
         new_words.append(new_word)
     return new_words
+
+def replace_punctuation(text):
+    """Replaces all kinds of punctuations with fullstops"""
+    text = re.sub(r'\|', r'.', text)
+    return re.sub(r'[^\w\s\.]', r' ', text)
 
 def remove_punctuation(words):
     """Remove punctuation from list of tokenized words"""
@@ -58,38 +64,67 @@ def remove_stopwords(words):
             new_words.append(word)
     return new_words
 
-def stem_words(words):
-    """Stem words in list of tokenized words"""
-    stemmer = LancasterStemmer()
-    stems = []
-    for word in words:
-        stem = stemmer.stem(word)
-        stems.append(stem)
-    return stems
+def normalize_english(words):
+    words = remove_non_ascii(words)
+    # words = to_lowercase(words)
+    words = remove_punctuation(words)
+    # words = replace_numbers(words)
+    # words = remove_stopwords(words)
+    return words
 
-def lemmatize_verbs(words):
-    """Lemmatize verbs in list of tokenized words"""
-    lemmatizer = WordNetLemmatizer()
-    lemmas = []
-    for word in words:
-        lemma = lemmatizer.lemmatize(word, pos='v')
-        lemmas.append(lemma)
-    return lemmas
-
-def normalize(words):
+def normalize_titles(words):
     words = remove_non_ascii(words)
     words = to_lowercase(words)
     words = remove_punctuation(words)
-    words = replace_numbers(words)
-    words = remove_stopwords(words)
+    # words = replace_numbers(words)
+    # words = remove_stopwords(words)
     return words
 
-def preprocess(sample):
+def clean_sample(sample):
     sample = remove_URL(sample)
     sample = replace_contractions(sample)
-    # Tokenize
-    words = nltk.word_tokenize(sample)
+    sample = replace_punctuation(sample)
+    return sample
 
-    # Normalize
-    return normalize(words)
+def sentencing(sample):
+    sample = clean_sample(sample)       # Cleaning of URLs etc
+    sents = sent_tokenize(sample)       # Tokenize
+    return sents
+
+def title_nouns(sample):
+    sents = sentencing(sample)
+    pos_tags = []
+    for sent in sents:
+        words = word_tokenize(sent)
+        words = normalize_titles(words)
+        pos_tags.extend(pos_tag(words))
+    nouns = [word.lower() for word,tag in pos_tags if tag[:2] == 'NN']
+    nouns = list(OrderedDict.fromkeys(nouns))
+    return nouns
+
+def description_nouns(sample):
+    sents = sentencing(sample)
+    pos_tags = []
+    for sent in sents:
+        words = word_tokenize(sent)
+        words = normalize_english(words)
+        pos_tags.extend(pos_tag(words))
+    nouns = [word.lower() for word,tag in pos_tags if tag[:2] == 'NN']
+    nouns = list(OrderedDict.fromkeys(nouns))
+    return nouns
+
+def keyword_nouns(sample):
+    sample = replace_contractions(sample)
+    sample = remove_URL(sample)
+    sample = re.sub(r',', r'.', sample)
+
+    sents = sent_tokenize(sample)
+    pos_tags = []
+    for sent in sents:
+        words = word_tokenize(sent)
+        words = normalize_english(words)
+        pos_tags.extend(pos_tag(words))
+    nouns = [word.lower() for word,tag in pos_tags if tag[:2] == 'NN']
+    nouns = list(OrderedDict.fromkeys(nouns))
+    return nouns
 

@@ -12,6 +12,7 @@ class NewsChannel:
     channel_data:   List[List[str]]     # Extracted data lines
     data_file_path: str                 # relative path to the data file
     video_count:    int                 # Number of videos
+    titles:         List[str]           # Titles of all the videos
     content_tags:   List[str]           # Keyword descriptions
     description:    List[str]           # Video descriptions
     time_range:     str                 # date range in which data was collected
@@ -25,9 +26,10 @@ class NewsChannel:
             self.channel_data = [line[:-1].split("\\#\\")
                                  for line in file.readlines()]
 
-        self.video_count = len(self.channel_data)
-        self.content_tags = [line[3] for line in self.channel_data]
-        self.description = [line[4] for line in self.channel_data]
+        self.video_count    = len(self.channel_data)
+        self.titles         = [line[0] for line in self.channel_data]
+        self.content_tags   = [line[3] for line in self.channel_data]
+        self.description    = [line[4] for line in self.channel_data]
         self.time_range = tl.get_date(self.channel_data[-1][2])\
                           + " - " + tl.get_date(self.channel_data[0][2])
 

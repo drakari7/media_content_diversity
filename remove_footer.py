@@ -27,7 +27,7 @@ for link in links:
 
     with open(write_file, 'w') as wf:
         for line_no, line in enumerate(lines[:], start=1):
-            pattern = r"About Us: IndiaTV is the country's most trusted Hindi News Channel"
+            pattern = r"BJP's Karnataka"
             chunks = re.split(pattern, line)
 
             temp = ' '.join(chunks[0].splitlines()).rstrip()

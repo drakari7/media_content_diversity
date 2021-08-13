@@ -7,13 +7,13 @@ def get_channel_name(channel_link: str):
 def get_english_links():
     with open("text_files/english_channels_ytlinks", "r") as file1:
         links = [link[:-1] for link in file1.readlines()]
-    return links 
+    return links
 
 
 def get_hindi_links():
     with open("text_files/hindi_channels_ytlinks", "r") as file1:
         links = [link[:-1] for link in file1.readlines()]
-    return links 
+    return links
 
 
 # Reads returns all channel links
@@ -22,8 +22,8 @@ def get_channel_links():
     return channel_links
 
 def get_temp_links():
-    links = get_channel_links()
-    links = links[8:9]
+    links = get_english_links()
+    links = links[4:5]
     return links
 
 
@@ -40,7 +40,7 @@ def is_int(x: str) -> bool:
         return False
 
 
-# Convert seconds to hr, min, seconds format 
+# Convert seconds to hr, min, seconds format
 def format_time(t: float):
     t = int(t)
     h, m, s = t//3600, (t//60)%60, t%60
