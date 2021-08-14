@@ -1,8 +1,6 @@
-import os
 import csv
-import pandas as pd
-from typing import List
-from itertools import chain
+import os
+from typing import List, Set
 from collections import OrderedDict
 
 import time
@@ -18,7 +16,7 @@ from channel_class import NewsChannel
 # then start the POS tagging part
 
 class LangProcessing(NewsChannel):
-    wiki_data: pd.DataFrame = pd.DataFrame()        # Entire wikipedia data
+    wiki_data:          Set[str] = set()            # Entire wikipedia data
     title_nouns:        List[List[str]]             # Nouns in each title
     keyword_nouns:      List[List[str]]             # Nouns in content tags
     description_nouns:  List[List[str]]             # Nouns in description
@@ -47,21 +45,20 @@ class LangProcessing(NewsChannel):
 
     # Loads wikipedia data in a pandas dataframe
     def _load_wikipedia(self):
-        if not self.wiki_data.empty:
+        if self.wiki_data:
             return
-        data_dir = "~/wikipedia_data/"
-        heading = ['Title', 'X', 'Y']
-        df = pd.read_csv(data_dir + 'meanvar1.csv', names=heading)
 
-        for i in range(2, 58):
-            file_name = data_dir + 'meanvar' + str(i) + '.csv'
-            temp = pd.read_csv(file_name, names=heading)
-            df = pd.concat(objs=[df, temp], ignore_index=True)  #type:ignore
-        self.wiki_data = df #type:ignore
+        data_dir = os.path.expanduser("~/wikipedia_data/")
+        for i in range(1, 58):
+            file = data_dir + "meanvar" + str(i) + ".csv"
+            with open(file, 'r') as f:
+                for line in f.readlines():
+                    word = line.split(',')[0][1:-1]
+                    self.wiki_data.add(word)
 
     # Search if phrase has a page on wikipedia
     def search_wiki(self, phrase) -> bool:
-        return (self.wiki_data['Title'] == phrase).any()
+        return phrase in self.wiki_data
 
     # check which nouns have pages on wikipedia and stores them
     def wiki_noun_checker(self):
@@ -73,14 +70,16 @@ class LangProcessing(NewsChannel):
             for idx in range(len(vid_nouns)-1):
                 noun = vid_nouns[idx]
                 bigram = vid_nouns[idx] + ' ' + vid_nouns[idx+1]
-                if self.search_wiki(noun):
-                    temp.append(noun)
                 if self.search_wiki(bigram):
                     temp.append(bigram)
+                    continue
+                if self.search_wiki(noun):
+                    temp.append(noun)
 
             if self.search_wiki(vid_nouns[-1]):     # check for last noun
                 temp.append(vid_nouns[-1])          # separately
 
+            temp = list(OrderedDict.fromkeys(temp))
             self.wiki_nouns.append(temp)
 
     # Saves the found wikipedia nouns to a file
@@ -100,15 +99,9 @@ def main():
     links = tl.get_temp_links()
 
     for link in links:
-        print(tl.get_channel_name(link) + ' started')
-        s_time = time.perf_counter()
         channel = LangProcessing(link)
-        print(f"t1 {time.perf_counter() - s_time}")
         channel.wiki_noun_checker()
-        print(f"t2 {time.perf_counter() - s_time}")
         channel.save_wiki_nouns()
-        e_time = time.perf_counter() - s_time
-        print(f"Time for channel {channel.channel_name} is {tl.format_time(e_time)}")
 
 
 if __name__ == "__main__":
