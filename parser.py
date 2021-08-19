@@ -15,7 +15,7 @@ from channel_class import NewsChannel
 # correct spellings, remove URLs
 # then start the POS tagging part
 
-class LangProcessing(NewsChannel):
+class EngLangProcessing(NewsChannel):
     wiki_data:          Set[str] = set()            # Entire wikipedia data
     title_nouns:        List[List[str]]             # Nouns in each title
     keyword_nouns:      List[List[str]]             # Nouns in content tags
@@ -67,17 +67,21 @@ class LangProcessing(NewsChannel):
         self.wiki_nouns = []
         for vid_nouns in self._all_nouns:
             temp = []
-            for idx in range(len(vid_nouns)-1):
+            idx = 0
+            while idx < len(vid_nouns)-1:
                 noun = vid_nouns[idx]
                 bigram = vid_nouns[idx] + ' ' + vid_nouns[idx+1]
                 if self.search_wiki(bigram):
                     temp.append(bigram)
+                    idx += 2
                     continue
                 if self.search_wiki(noun):
                     temp.append(noun)
+                idx += 1
 
-            if self.search_wiki(vid_nouns[-1]):     # check for last noun
-                temp.append(vid_nouns[-1])          # separately
+            # Check last entry separately
+            if idx==len(vid_nouns)-1 and self.search_wiki(vid_nouns[idx]):
+                temp.append(vid_nouns[idx])
 
             temp = list(OrderedDict.fromkeys(temp))
             self.wiki_nouns.append(temp)
@@ -94,13 +98,18 @@ class LangProcessing(NewsChannel):
             write = csv.writer(wf)
             write.writerows(self._all_nouns)
 
+class HindiLangProcessing(EngLangProcessing):
+    pass
+
+
 
 def main():
     links = tl.get_temp_links()
 
     for link in links:
-        channel = LangProcessing(link)
+        channel = EngLangProcessing(link)
         channel.wiki_noun_checker()
+        channel.save_all_nouns()
         channel.save_wiki_nouns()
 
 
