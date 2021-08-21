@@ -23,7 +23,7 @@ def get_channel_links():
 
 def get_temp_links():
     links = get_hindi_links()
-    # links = links[1:2]
+    links = links[0:1]
     return links
 
 

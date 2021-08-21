@@ -2,9 +2,14 @@ import re, unicodedata
 import contractions
 import inflect
 from collections import OrderedDict
+
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize, sent_tokenize
 from nltk.tag import pos_tag
+import stanza
+
+# Global pipleline, don't want to instantiate this again and again
+pipeline = stanza.Pipeline(lang='hi', processors='tokenize,pos', verbose=False)
 
 def replace_contractions(text):
     """Replace contractions in string of text"""
@@ -31,7 +36,7 @@ def to_lowercase(words):
     return new_words
 
 def replace_punctuation(text):
-    """Replaces all kinds of punctuations with fullstops"""
+    """Replace | with periods. Replace other punctuation with blanks"""
     text = re.sub(r'\|', r'.', text)
     return re.sub(r'[^\w\s\.]', r' ', text)
 
@@ -126,5 +131,17 @@ def keyword_nouns(sample):
         pos_tags.extend(pos_tag(words))
     nouns = [word.lower() for word,tag in pos_tags if tag[:2] == 'NN']
     nouns = list(OrderedDict.fromkeys(nouns))
+    return nouns
+
+def hi_nouns(sample):
+    sample = remove_URL(sample)
+    sample = re.sub(r'\|', r'.', sample)
+
+    doc = pipeline(sample)
+    if not isinstance(doc, stanza.Document):
+        raise Exception()
+
+    nouns = [word.text for sentence in doc.sentences for word in sentence.words
+             if word.xpos[:2] == "NN"]
     return nouns
 

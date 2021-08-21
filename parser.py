@@ -28,22 +28,22 @@ class EngLangProcessing(NewsChannel):
 
     def __init__(self, link):
         super().__init__(link)
-        self.title_nouns = [tp.title_nouns(title) for title in self.titles]
-        self.keyword_nouns = [tp.keyword_nouns(k) for k in self.content_tags]
-        self.description_nouns = [tp.description_nouns(desc)
-                                    for desc in self.description]
+        # self.title_nouns = [tp.title_nouns(title) for title in self.titles]
+        # self.keyword_nouns = [tp.keyword_nouns(k) for k in self.content_tags]
+        # self.description_nouns = [tp.description_nouns(desc)
+        #                             for desc in self.description]
 
         self.wiki_noun_file = "nouns/wiki_nouns/" + self.channel_name + ".csv"
         self.all_noun_file = "nouns/all_nouns/" + self.channel_name + ".csv"
         self._all_nouns = []
-        for n1, n2, n3 in zip(self.title_nouns, self.keyword_nouns,
-                                self.description_nouns):
-            temp = n1.copy()
-            temp.extend(n2)
-            temp.extend(n3)
-            self._all_nouns.append(temp)
+        # for n1, n2, n3 in zip(self.title_nouns, self.keyword_nouns,
+        #                         self.description_nouns):
+        #     temp = n1.copy()
+        #     temp.extend(n2)
+        #     temp.extend(n3)
+        #     self._all_nouns.append(temp)
 
-    # Loads wikipedia data in a pandas dataframe
+    # Loads wikipedia data in a set for O(1) lookup time
     def _load_wikipedia(self):
         if self.wiki_data:
             return
@@ -99,18 +99,36 @@ class EngLangProcessing(NewsChannel):
             write.writerows(self._all_nouns)
 
 class HindiLangProcessing(EngLangProcessing):
-    pass
+    """This class aims to extend noun parsing to hindi text"""
+    hi_title_nouns:         List[List[str]]         # title nouns for hindi
+    hi_keyword_nouns:       List[List[str]]         # keyword nouns for hindi
+    hi_description_nouns:   List[List[str]]         # description nouns hindi
 
+    _hi_all_nouns:          List[List[str]]         # hindi nouns combined
+
+
+    def __init__(self,link):
+        super().__init__(link)
+        self.hi_title_nouns = [tp.hi_nouns(title) for title in self.titles]
+        self.hi_keyword_nouns = [tp.hi_nouns(k) for k in self.content_tags]
+        self.hi_description_nouns = [tp.hi_nouns(desc)
+                                        for desc in self.description]
+        self._hi_all_nouns = []
+        for n1, n2, n3 in zip(self.hi_title_nouns, self.hi_keyword_nouns,
+                                self.hi_description_nouns):
+            temp = n1.copy()
+            temp.extend(n2)
+            temp.extend(n3)
+            self._hi_all_nouns.append(temp)
+        self._all_nouns = self._hi_all_nouns
 
 
 def main():
     links = tl.get_temp_links()
 
     for link in links:
-        channel = EngLangProcessing(link)
-        channel.wiki_noun_checker()
+        channel = HindiLangProcessing(link)
         channel.save_all_nouns()
-        channel.save_wiki_nouns()
 
 
 if __name__ == "__main__":
