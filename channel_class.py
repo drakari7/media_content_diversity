@@ -51,9 +51,11 @@ class NewsChannel:
 def main():
     test_links = tl.get_channel_links()
 
+    total_vids = 0
     for link in test_links:
         test_channel = NewsChannel(link)
-        test_channel.is_broken()
+        total_vids += test_channel.video_count
+    print(total_vids)
 
 
 if __name__ == "__main__":

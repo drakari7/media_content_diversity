@@ -103,7 +103,7 @@ def title_nouns(sample):
         words = word_tokenize(sent)
         words = normalize_titles(words)
         pos_tags.extend(pos_tag(words))
-    nouns = [word.lower() for word,tag in pos_tags if tag[:2] == 'NN']
+    nouns = [word.lower() for word,tag in pos_tags if tag[:2] == 'NN' and len(word) > 1]
     nouns = list(OrderedDict.fromkeys(nouns))
     return nouns
 
@@ -114,7 +114,7 @@ def description_nouns(sample):
         words = word_tokenize(sent)
         words = normalize_english(words)
         pos_tags.extend(pos_tag(words))
-    nouns = [word.lower() for word,tag in pos_tags if tag[:2] == 'NN']
+    nouns = [word.lower() for word,tag in pos_tags if tag[:2] == 'NN' and len(word) > 1]
     nouns = list(OrderedDict.fromkeys(nouns))
     return nouns
 
@@ -129,19 +129,21 @@ def keyword_nouns(sample):
         words = word_tokenize(sent)
         words = normalize_english(words)
         pos_tags.extend(pos_tag(words))
-    nouns = [word.lower() for word,tag in pos_tags if tag[:2] == 'NN']
+    nouns = [word.lower() for word,tag in pos_tags if tag[:2] == 'NN' and len(word) > 1]
     nouns = list(OrderedDict.fromkeys(nouns))
     return nouns
 
+# TODO: remove numbers in hindi text
+#   also remove symbols like hashes etc if possible
 def hi_nouns(sample):
     sample = remove_URL(sample)
+    sample = re.sub(r'[A-Za-z0-9]', r' ', sample)
     sample = re.sub(r'\|', r'.', sample)
+    sample = re.sub(r'\!', r'.', sample)
 
     doc = pipeline(sample)
-    if not isinstance(doc, stanza.Document):
-        raise Exception()
 
     nouns = [word.text for sentence in doc.sentences for word in sentence.words
-             if word.xpos[:2] == "NN"]
+             if word.xpos[:2] == "NN" and len(word.text) > 1]
     return nouns
 

@@ -2,7 +2,7 @@
 
 ## Aim
 
-This project aims to analyse various news media outlets by the content they put out, focusing specifically on the diversity in their content. For this, the judgements will be made based on internal diversity as well as diversity with respect to different news channels. At the end of this project, we hope to categorise different news channels in a systematic, algorithmic and concrete manner. 
+This project aims to analyse various news media outlets by the content they put out, focusing specifically on the diversity in their content. For this, the judgements will be made based on internal diversity as well as diversity with respect to different news channels. At the end of this project, we hope to categorise different news channels in a systematic, algorithmic and concrete manner.
 
 ## Scope
 
@@ -30,4 +30,4 @@ Some of the observed statistics up until now are presented here.
 ![Graph showing traffic at each channel](./graphs/views.jpg "Channel traffic")
 
 ## Acknowledgements
-This is my (Shreyash Ravi) thesis work done under the guidance of professor Nisheeth Srivastava at the department of computer science and engineering, IIT Kanpur. 
+This is my (Shreyash Ravi) thesis work done under the guidance of professor Nisheeth Srivastava at the department of computer science and engineering, IIT Kanpur.
