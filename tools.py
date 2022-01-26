@@ -1,3 +1,6 @@
+from PIL import Image
+import numpy as np
+
 # returns the name of the channel from its youtube link
 def get_channel_name(channel_link: str):
     channel_name = channel_link.split('/')[4]
@@ -23,7 +26,7 @@ def get_channel_links():
 
 def get_temp_links():
     links = get_english_links()
-    # links = links[3:4]
+    links = links[3:4]
     return links
 
 
@@ -57,6 +60,13 @@ def get_date(date: str):
 
     return ' '.join(temp)
 
+# Return a blank white image to save
+def get_blank_image():
+    a = np.full((480, 640, 3), 255, dtype=np.uint8)
+    image = Image.fromarray(a, "RGB")
+    return image
+
+
 # ----------------Testing----------------
 def main():
     k = get_temp_links()
@@ -64,6 +74,8 @@ def main():
 
     for i, lin in enumerate(l):
         print(i, get_channel_name(lin))
+
+    print()
 
     for i, lin in enumerate(k):
         print(i, get_channel_name(lin))

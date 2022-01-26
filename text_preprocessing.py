@@ -1,7 +1,6 @@
 import re, unicodedata
 import contractions
 import inflect
-from collections import OrderedDict
 
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize, sent_tokenize
@@ -104,7 +103,7 @@ def title_nouns(sample):
         words = normalize_titles(words)
         pos_tags.extend(pos_tag(words))
     nouns = [word.lower() for word,tag in pos_tags if tag[:2] == 'NN' and len(word) > 1]
-    nouns = list(OrderedDict.fromkeys(nouns))
+    nouns = list(set(nouns))
     return nouns
 
 def description_nouns(sample):
@@ -115,7 +114,7 @@ def description_nouns(sample):
         words = normalize_english(words)
         pos_tags.extend(pos_tag(words))
     nouns = [word.lower() for word,tag in pos_tags if tag[:2] == 'NN' and len(word) > 1]
-    nouns = list(OrderedDict.fromkeys(nouns))
+    nouns = list(set(nouns))
     return nouns
 
 def keyword_nouns(sample):
@@ -130,7 +129,7 @@ def keyword_nouns(sample):
         words = normalize_english(words)
         pos_tags.extend(pos_tag(words))
     nouns = [word.lower() for word,tag in pos_tags if tag[:2] == 'NN' and len(word) > 1]
-    nouns = list(OrderedDict.fromkeys(nouns))
+    nouns = list(set(nouns))
     return nouns
 
 # TODO: remove numbers in hindi text
