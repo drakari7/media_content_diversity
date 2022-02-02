@@ -13,6 +13,7 @@ class NewsChannel:
     data_file_path: str                 # relative path to the data file
     video_count:    int                 # Number of videos
     titles:         List[str]           # Titles of all the videos
+    dates:          List[str]           # Array of date of video
     content_tags:   List[str]           # Keyword descriptions
     description:    List[str]           # Video descriptions
     time_range:     str                 # date range in which data was collected
@@ -28,6 +29,7 @@ class NewsChannel:
 
         self.video_count    = len(self.channel_data)
         self.titles         = [line[0] for line in self.channel_data]
+        self.dates          = [tl.get_date(line[2]) for line in self.channel_data]
         self.content_tags   = [line[3] for line in self.channel_data]
         self.description    = [line[4] for line in self.channel_data]
         self.time_range = tl.get_date(self.channel_data[-1][2])\
@@ -54,7 +56,6 @@ def main():
     total_vids = 0
     for link in test_links:
         test_channel = NewsChannel(link)
-        total_vids += test_channel.video_count
     print(total_vids)
 
 

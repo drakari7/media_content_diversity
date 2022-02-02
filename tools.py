@@ -26,7 +26,7 @@ def get_channel_links():
 
 def get_temp_links():
     links = get_english_links()
-    # links = links[3:4]
+    # links = links[3:5]
     return links
 
 
@@ -79,6 +79,8 @@ def main():
 
     for i, lin in enumerate(k):
         print(i, get_channel_name(lin))
+
+    print(k)
 
 
 if __name__ == "__main__":
