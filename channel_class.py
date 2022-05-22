@@ -31,8 +31,7 @@ class NewsChannel:
         self.dates          = [line[2] for line in self.channel_data]
         self.content_tags   = [line[3] for line in self.channel_data]
         self.description    = [line[4] for line in self.channel_data]
-        self.time_range     = self.dates[0] + " - " + self.dates[-1] if \
-                                self.dates else "Nil"
+        self.time_range     = self.dates[-1] + " - " + self.dates[0]
 
     # Returns the mean of views on the channel
     def average_views(self) -> float:
