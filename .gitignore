@@ -4,9 +4,7 @@ test.txt
 tags
 __pycache__
 .DS_Store
-adblockplus.crx
-extensions
-drivers
-channel_data/TodayontheKoreanServer.hsv
 logs_data_collection
-geckodriver.log
+thesis_env
+cache/wiki_index.pkl
+graphs/wordclouds

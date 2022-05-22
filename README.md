@@ -1,4 +1,4 @@
-# Media Content Diversity
+# Media Content Diversity Analysis
 
 ## Aim
 
@@ -21,6 +21,21 @@ The channels that we have considered for our study are,
     - IndiaTV
     - news18India
     - abpnews
+
+## Setting up the pipeline
+In order to set up the pipeline on a new server/machine, the following things need to be ensured.
+
+1. You should create a virtual environment. The required packages are listed in `requirements.txt`. Use Python version >= 3.10.
+
+2. Install the english language data required by nltk library. You can do this via
+```python
+import nltk; nltk.download()
+```
+
+3. To run a cronjob that scrapes data from youtube every week and processes it. The cronjob runs the underlying `pipeline.py` file, which has a timeframe specified into it. Modify the timeframe and your cronjob schedule accordingly. (i.e. you want to pull once a week or once every day etc.). Enter into bash the following command to list the cronjob,
+```bash
+crontab -e
+```
 
 ## Observations
 

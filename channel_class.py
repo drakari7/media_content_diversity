@@ -1,6 +1,5 @@
 # Importing libraries
 import statistics
-from typing import List
 
 # local imports
 import tools as tl
@@ -9,31 +8,31 @@ import tools as tl
 class NewsChannel:
     channel_link:   str                 # Link to the youtube channel
     channel_name:   str                 # Name of the channel
-    channel_data:   List[List[str]]     # Extracted data lines
+    channel_data:   list[list[str]]     # Extracted data lines
     data_file_path: str                 # relative path to the data file
     video_count:    int                 # Number of videos
-    titles:         List[str]           # Titles of all the videos
-    dates:          List[str]           # Array of date of video
-    content_tags:   List[str]           # Keyword descriptions
-    description:    List[str]           # Video descriptions
+    titles:         list[str]           # Titles of all the videos
+    dates:          list[str]           # Array of date of video
+    content_tags:   list[str]           # Keyword descriptions
+    description:    list[str]           # Video descriptions
     time_range:     str                 # date range in which data was collected
 
     def __init__(self, link):
         self.channel_link = link
         self.channel_name = tl.get_channel_name(self.channel_link)
-        self.data_file_path = "channel_data/" + self.channel_name + ".hsv"
+        self.data_file_path = "data/" + self.channel_name + ".hsv"
 
         with open(self.data_file_path, "r") as file:
             self.channel_data = [line[:-1].split("\\#\\")
-                                 for line in file.readlines()]
+                    for line in file.readlines()][::-1]
 
         self.video_count    = len(self.channel_data)
         self.titles         = [line[0] for line in self.channel_data]
-        self.dates          = [tl.get_date(line[2]) for line in self.channel_data]
+        self.dates          = [line[2] for line in self.channel_data]
         self.content_tags   = [line[3] for line in self.channel_data]
         self.description    = [line[4] for line in self.channel_data]
-        self.time_range = tl.get_date(self.channel_data[-1][2])\
-                          + " - " + tl.get_date(self.channel_data[0][2])
+        self.time_range     = self.dates[0] + " - " + self.dates[-1] if \
+                                self.dates else "Nil"
 
     # Returns the mean of views on the channel
     def average_views(self) -> float:
@@ -53,10 +52,16 @@ class NewsChannel:
 def main():
     test_links = tl.get_channel_links()
 
-    total_vids = 0
+    count = 0
     for link in test_links:
-        test_channel = NewsChannel(link)
-    print(total_vids)
+        try:
+            test_channel = NewsChannel(link)
+            test_channel.is_broken()
+        except IndexError:
+            print(link)
+            count += 1
+
+    print(count)
 
 
 if __name__ == "__main__":

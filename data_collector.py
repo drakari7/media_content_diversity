@@ -1,13 +1,19 @@
 import time
 import logging
 import concurrent.futures
+import os
+import shutil
+from datetime import date, timedelta
 
 from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.chrome.webdriver import WebDriver
+from webdriver_manager.chrome import ChromeDriverManager
+
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.chrome.options import Options as cOptions
-from selenium.webdriver.firefox.options import Options as fOptions
 
 # local imports
 import tools as tl
@@ -15,6 +21,10 @@ import tools as tl
 # logger options
 logging.basicConfig(filename='logs_data_collection', filemode='w',
                     level=logging.INFO)
+# Globals
+data_dir = "data/"
+file_path = lambda x: data_dir + x + '.hsv.new'
+today = date.today()
 
 
 # --------Functions--------------------------
@@ -23,36 +33,25 @@ def wait_till_visible_xpath(driver, xpath):
             EC.visibility_of_element_located((By.XPATH, xpath)))
 
 
-# Driver setup and options
-def get_driver(browser: str):
-    if browser == "chrome":
-        driver_path = "./drivers/chromedriver"
-        # ADBLOCK_PATH = ""
-        options = cOptions()
-        options.add_argument('--headless')
-        options.add_argument('--mute-audio')
-        # options.add_extension(ADBLOCK_PATH)
-        prefs = {"profile.managed_default_content_settings.images": 2}
-        options.add_experimental_option("prefs", prefs)
-        driver = webdriver.Chrome(driver_path, options=options)
+def get_driver():
+    """
+    Returns driver (google chrome driver) object
+    """
+    options = Options()
+    options.add_argument('--headless')
+    options.add_argument('--mute-audio')
+    prefs = {"profile.managed_default_content_settings.images": 2}
+    options.add_experimental_option("prefs", prefs)
 
-    elif browser == "firefox":
-        driver_path = "./drivers/geckodriver"
-        # ADBLOCK_PATH = "./extensions/ublock_origin.xpi"
-        options = fOptions()
-        options.add_argument('--headless')
-        options.add_argument('--mute-audio')
-        driver = webdriver.Firefox(driver_path, options=options)
-        # driver.install_addon(ADBLOCK_PATH)
-
-    else:
-        raise Exception("That browser is not supported")
-
-    # time.sleep(5)           # Time for installing adblock
+    os.environ['WDM_LOG'] = '0'
+    driver = webdriver.Chrome(
+            service=Service(ChromeDriverManager().install()),
+            options=options,
+            )
     return driver
 
 
-def get_urls(driver, channel_name, time_range):
+def get_urls(driver: WebDriver, channel_name, time_range):
     """
     get_urls(driver, channel_name, time_range)
 
@@ -62,128 +61,209 @@ def get_urls(driver, channel_name, time_range):
 
     Returns a tuple (urls, titles) of the videos in the current youtube page
     """
+
     posting_time_xpath = '//*[@id="metadata-line"]/span[2]'
     try:
         wait_till_visible_xpath(driver, posting_time_xpath)
     except:
         logging.exception(f"Could not load {channel_name}'s youtube page properly")
-    posting_time = driver.find_elements_by_xpath(posting_time_xpath)
+
+    posting_time = driver.find_elements(By.XPATH, posting_time_xpath)
     logging.info(f"Collecting urls for channel {channel_name}")
 
+    range_pos = tl.time_pos(time_range)
+    stuck_counter = 0
+    prev_len = 0
     # Scrolling down until we have the urls of all the videos in the time range
-    while posting_time[-1].text != time_range:
+    while tl.time_pos(posting_time[-1].text) <= range_pos+1:
         driver.execute_script("window.scrollBy(0,5000);")   # Scroll down
-
         try:
-            posting_time = driver.find_elements_by_xpath(posting_time_xpath)
+            posting_time = driver.find_elements(By.XPATH, posting_time_xpath)
         except:
             logging.exception(f"Unknown error in URL collection - {channel_name}")
             continue
 
+        if len(posting_time) == prev_len:
+            stuck_counter += 1
+            if stuck_counter == 50:
+                time.sleep(10)
+                raise
+        else:
+            stuck_counter = 0
+        prev_len = len(posting_time)
         logging.info(f"Collected {len(posting_time)} URLs - {channel_name}")
-        time.sleep(0.15)     # Give time to load
+        time.sleep(0.2)     # Give time to load
+
+    time.sleep(0.3)         # time to stabilise page
+
+    # Determine precisely how many videos we want for given time range
+    posting_time = driver.find_elements(By.XPATH, posting_time_xpath)
+    idx = len(posting_time) - 1
+    while tl.time_pos(posting_time[idx].text) > range_pos:
+        idx -= 1
 
     # Collecting all relevant video urls
     t1 = time.perf_counter()
-    titles = driver.find_elements_by_id("video-title")
+    titles = driver.find_elements(By.ID, "video-title")[:idx+1]
     t2 = time.perf_counter()
-    logging.info(f"time taken to get elements {t2-t1} - {channel_name}")
+    logging.info(f"time taken to get {idx+1} elements {tl.format_time(t2-t1)} - {channel_name}")
     urls = [title.get_attribute("href") for title in titles]
     titles = [i.text for i in titles]
     return (urls, titles)
 
 
-def process_urls(driver, channel_name, file_name, urls) -> None:
-    # processing each of the urls 1 by 1, if we run into some error,
-    # then we skip the video
-    skipped_videos_count = 0
-
-    with open(file_name, "w") as write_file:
-        for idx, url in enumerate(urls):
-            try:
-                line = _process_url(driver, url)
-            except:
-                logging.exception(f"Corrupted URL : {url}, video no. {idx}, {channel_name}")
-                skipped_videos_count += 1
-                continue
-
-            print(line, file=write_file)
-            logging.info(f"Video No. {idx} processed for {channel_name}")
-
-    print("Total videos skipped for channel {0} = {1}"
-            .format(channel_name, skipped_videos_count))
-
-
 # Actually scraping the data
-def _process_url(driver, url):
+def _process_url(driver: WebDriver, url, time_range):
+    if 'shorts' in url:
+        return None
     driver.get(url)
 
     # Wait for title to load, if can't then throw error
     title_xpath = '//*[@id="container"]/h1/yt-formatted-string'
     wait_till_visible_xpath(driver, title_xpath)
-    title = driver.find_element_by_xpath(title_xpath).get_attribute("innerText")
+    title = driver.find_element(By.XPATH, title_xpath).get_attribute("innerText")
 
     views_xpath = '//*[@id="count"]/ytd-video-view-count-renderer/span[1]'
-    views = driver.find_element_by_xpath(views_xpath).get_attribute("innerText")
+    views = driver.find_element(By.XPATH, views_xpath).get_attribute("innerText")
 
     date_xpath = '//*[@id="info-strings"]/yt-formatted-string'
-    date = driver.find_element_by_xpath(date_xpath).get_attribute("innerText")
+    tmp = driver.find_element(By.XPATH, date_xpath).get_attribute("innerText")
 
     # duration_xpath = "//span[@class='ytp-time-duration']"
-    # duration = driver.find_element_by_xpath(duration_xpath).get_attribute("innerText")
+    # duration = driver.find_elements(By.XPATH, duration_xpath).get_attribute("innerText")
 
-    keywords = driver.find_element_by_name("keywords")
+    keywords = driver.find_element(By.NAME, "keywords")
     keywords = keywords.get_attribute("content")
     keywords = ' '.join(keywords.splitlines())
 
     description_xpath = '//*[@id="description"]/yt-formatted-string'
-    description = driver.find_element_by_xpath(description_xpath).get_attribute("innerText")
+    description = driver.find_element(By.XPATH, description_xpath).get_attribute("innerText")
     description = ' '.join(description.splitlines())
 
-    return '\\#\\'.join([title, views, date, keywords, description])
+    try:
+        vid_date = tl.parse_date(tmp)
+    except:
+        return None
+
+    start_date = str(today - timedelta(tl.time_pos(time_range)))
+    end_date = str(today - timedelta(1))
+    
+    if vid_date < start_date or vid_date > end_date:
+        return None
+
+    return '\\#\\'.join([title, views, vid_date, keywords, description])
 
 
-def scrape_channel_data(channel_link):
-    cs_time = time.perf_counter()
+def process_urls(driver, channel_name, urls, time_range) -> tuple[float, list[str]]:
+    # processing each of the urls 1 by 1, if we run into some error,
+    # then we skip the video
+    skipped_videos_count, total_videos_count, continuous_skipped = 0, 0, 0
+    file_data = []
 
+    for idx, url in enumerate(urls):
+        total_videos_count += 1
+        try:
+            line = _process_url(driver, url, time_range)
+            continuous_skipped = 0
+        except:
+            logging.error(f"Corrupted URL : {url}, video no. {idx+1}, {channel_name}")
+            skipped_videos_count += 1
+            continuous_skipped += 1
+
+            # If 10 videos are skipped continuously, return failure
+            if continuous_skipped == 10:
+                logging.info(f"10 failures in a row for {channel_name}, aborting...")
+                time.sleep(10)
+                return 1.0, []
+            continue
+
+        if line:
+            file_data.append(line)
+        logging.info(f"Video No. {idx+1} processed for {channel_name}")
+
+    # ratio of videos which were skipped
+    fail_rate = skipped_videos_count/total_videos_count
+    return fail_rate, file_data[::-1]
+
+
+def scrape_channel_data(channel_link, time_range) -> None:
     channel_name = tl.get_channel_name(channel_link)    # Output file handling
-    file_name = 'channel_data/' + channel_name + '.tmp'
 
-    with get_driver(browser="chrome") as driver:
+    # Create data directory if doesn't exist
+    os.makedirs(data_dir, exist_ok=True)
+    file_name = data_dir + channel_name + '.hsv.new'
+
+    with get_driver() as driver:
         driver.get(channel_link)
         try:
-            video_urls, _ = get_urls(driver, channel_name, 
-                                     time_range="2 days ago")
+            video_urls, _ = get_urls(driver, channel_name, time_range)
         except:
             logging.exception(f"Getting URL function failed! - {channel_name}")
             raise
 
-        elapsed_time = time.perf_counter() - cs_time
-        print("Total number of urls found for channel {0} = {1} in {2}"
-                .format(channel_name, len(video_urls),
-                        tl.format_time(elapsed_time)))
+    fail_rate, counter = 1, 0
+    while fail_rate > 0.2 and counter < 5:
+        counter += 1
+        with get_driver() as driver:
+            fail_rate, data = process_urls(driver, channel_name, 
+                        video_urls, time_range)
+        time.sleep(5)
 
-        process_urls(driver, channel_name, file_name, video_urls)
+    if fail_rate < 0.2:
+        with open(file_name, "w") as f:
+            f.write("\n".join(data))
+        logging.info(f"Channel finished successfully - {channel_name}")
 
-        final_time = time.perf_counter() - cs_time
-        print("Total time taken for channel {0} = {1}"
-                .format(channel_name, tl.format_time(final_time)))
+def append_data(links):
+    new_paths = [file_path(tl.get_channel_name(c)) for c in links]
 
+    # Make backup of previous data
+    shutil.copytree('data', 'data_backup', dirs_exist_ok=True)
+
+    for new_path in new_paths:
+        old_path = new_path[:-4]
+        # Make sure older file exists
+        if not os.path.exists(old_path):
+            with open(old_path, 'w'): pass
+
+        with open(new_path, 'r') as rf:
+            data = rf.read()
+        with open(old_path, 'a') as af:
+            af.write(data)
+        os.remove(new_path)
+
+def collect_all_data(links, time_range: str, n_workers=6):
+    logging.info(f"Launching collect data function")
+    
+    # Define useful lambdas
+    is_collected = lambda x: os.path.isfile(x) and os.path.getsize(x) > 0
+
+    links_dict = {file_path(tl.get_channel_name(link)):link for link in links}
+
+    # keep collecting until we get clean copies for all
+    # if it fails 5 times, then program terminates
+    attempts = 0
+    while links_dict and attempts < 5:
+        attempts += 1
+        links = links_dict.values()
+        ranges = [time_range] * len(links)
+        with concurrent.futures.ThreadPoolExecutor(max_workers=n_workers) as executor:
+            executor.map(scrape_channel_data, links, ranges)
+
+        for fp in list(links_dict.keys()):
+            if is_collected(fp):
+                del links_dict[fp]
 
 # ------------------ Start of Main Code -------------------------------
 def main():
-    g_start = time.perf_counter()
+    # Specify time range like "1 week ago", or "3 days ago" etc.
+    # "1 week ago" means that you want data from past week
 
-    # channels = tl.get_channel_links()[1:2]
-    channels = tl.get_temp_links()
-    # channels = tl.get_testing_channel()        # Uncomment for testing
-
-    with concurrent.futures.ThreadPoolExecutor() as executor:
-        executor.map(scrape_channel_data, channels)
-
-    g_end = time.perf_counter()
-    print("Total overall time = {}"
-            .format(tl.format_time(g_end - g_start)))
+    channels = tl.get_channel_links()
+    new_paths = [file_path(tl.get_channel_name(c)) for c in channels]
+    print(new_paths)
+    # collect_all_data(time_range="1 week ago")
+    # append_data()
 
 
 if __name__ == "__main__":

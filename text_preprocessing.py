@@ -5,10 +5,7 @@ import inflect
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize, sent_tokenize
 from nltk.tag import pos_tag
-import stanza
 
-# Global pipleline, don't want to instantiate this again and again
-pipeline = stanza.Pipeline(lang='hi', processors='tokenize,pos', verbose=False)
 
 def replace_contractions(text):
     """Replace contractions in string of text"""
@@ -131,18 +128,3 @@ def keyword_nouns(sample):
     nouns = [word.lower() for word,tag in pos_tags if tag[:2] == 'NN' and len(word) > 1]
     nouns = list(set(nouns))
     return nouns
-
-# TODO: remove numbers in hindi text
-#   also remove symbols like hashes etc if possible
-def hi_nouns(sample):
-    sample = remove_URL(sample)
-    sample = re.sub(r'[A-Za-z0-9]', r' ', sample)
-    sample = re.sub(r'\|', r'.', sample)
-    sample = re.sub(r'\!', r'.', sample)
-
-    doc = pipeline(sample)
-
-    nouns = [word.text for sentence in doc.sentences for word in sentence.words
-             if word.xpos[:2] == "NN" and len(word.text) > 1]
-    return nouns
-

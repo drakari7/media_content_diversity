@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block title %}
+News Trends!
+{% endblock title %}
+
+{% block content %}
+
+<div class="d-flex justify-content-center">
+  <form class="box" action="#" method="post">
+    <input type="text" name="query" id="query"/>
+    <input type="submit" class="button" value="Submit" />
+  </form>
+</div>
+
+  
+</div>
+
+{% if query %}
+<div class="d-flex justify-content-center">
+  <img src="{{path}}" class="graph" alt="This is a graph about {{query}}"/>
+</div>
+{% endif %}
+
+{% endblock content %}

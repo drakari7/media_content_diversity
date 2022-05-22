@@ -5,8 +5,10 @@ import numpy as np
 import tools as tl
 from channel_class import NewsChannel
 
-links = tl.get_temp_links()
-wordcloud_folder = "./nouns/wordclouds/"
+# Before plotting, make sure wordclouds are produced by running
+# plot_wordclouds in wiki parser
+links = tl.get_channel_links()
+wordcloud_folder = tl.get_root_dir() + "graphs/wordclouds/"
 
 x = []
 y = []
@@ -27,8 +29,6 @@ for i, link in enumerate(links):
     y.extend(tmp_y)
     img_array.extend(tmp_img_array)
     y_labels.append(channel.channel_name)
-
-
 
 
 ### ----- Below this line is just plotting the graph
@@ -73,9 +73,12 @@ fig.canvas.mpl_connect('motion_notify_event', hover)
 
 fig = plt.gcf()
 
-### ------- Any changes like naming axis etc here
+### ----- Dont change anything above ^^. Copied from stackoverflow
+
+### ------- Any personal changes like naming axis etc here
 
 # plt.xticks(np.arange(1, len(x_labels)+1), x_labels, rotation=80)
-plt.yticks(np.arange(1, 6), y_labels)
-plt.axis([0, 50, 0, 6])
+plt.yticks(np.arange(1, 26), y_labels)
+plt.axis([0, 30, 0, 26])
+plt.tight_layout()
 plt.show()
