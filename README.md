@@ -23,7 +23,7 @@ The channels that we have considered for our study are,
     - abpnews
 
 ## Setting up the pipeline
-In order to set up the pipeline on a new server/machine, the following things need to be ensured.
+In order to set up the pipeline on a new server/machine, the following needs to be ensured.
 
 1. You should create a virtual environment. The required packages are listed in `requirements.txt`. Use Python version >= 3.10.
 
@@ -32,10 +32,10 @@ In order to set up the pipeline on a new server/machine, the following things ne
 import nltk; nltk.download()
 ```
 
-3. To run a cronjob that scrapes data from youtube every week and processes it. The cronjob runs the underlying `pipeline.py` file, which has a timeframe specified into it. Modify the timeframe and your cronjob schedule accordingly. (i.e. you want to pull once a week or once every day etc.). Enter into bash the following command to list the cronjob,
-```bash
-crontab -e
-```
+3. To run a cronjob that scrapes data from youtube every week and processes it. The cronjob runs the underlying `pipeline.py` file, which has a timeframe specified into it. Modify the timeframe and your cronjob schedule accordingly. (i.e. you want to pull once a week or once every day etc.). Enter into bash the following command to list the cronjob, 
+```bash crontab -e ```
+
+4. You will have to download and extract the wikipedia multistream index file from the wikipedia database, and convert it to a .pkl file. Afterwards, put it in cache under the name `wiki_index.pkl`. Download the file named `enwiki-[SOME NUMBER]-pages-articles-multistream-index.txt.bz2` where [SOME NUMBER] is a numeric value from the link https://dumps.wikimedia.org/enwiki/. Extract and convert the txt file to pkl using python. A helper conversion script is provided in this directory named `convert_index.py`.
 
 ## Observations
 
