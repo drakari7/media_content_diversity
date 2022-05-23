@@ -1,0 +1,8 @@
+__pycache__
+logs_data_collection
+cache/wiki_index.pkl
+*backup
+data/*
+static/graphs/*
+nouns/*
+graphs/wordclouds/*

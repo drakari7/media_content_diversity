@@ -20,7 +20,8 @@ import tools as tl
 
 # logger options
 logging.basicConfig(filename='logs_data_collection', filemode='w',
-                    level=logging.INFO)
+                    level=logging.INFO,
+                    datefmt='%Y-%m-%d %H:%M:%S')
 # Globals
 data_dir = "data/"
 file_path = lambda x: data_dir + x + '.hsv.new'

@@ -13,10 +13,10 @@ This file will be run on a weekly cronjob from a server.
 """
 if __name__ == "__main__":
     links = tl.get_channel_links()
-    parallel_workers = 6
+    parallel_workers = 4
 
     # Scraping and collecting data into data/ dir
-    collect_all_data(links, "1 week ago", parallel_workers)
+    collect_all_data(links, "1 day ago", parallel_workers)
     append_data(links)
 
     # Generating basic statistic graphs in graphs/ dir
