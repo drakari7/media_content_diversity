@@ -2,6 +2,7 @@ from PIL import Image
 import numpy as np
 import time
 from dateutil import parser
+from datetime import datetime
 import re
 import os
 
@@ -143,6 +144,16 @@ def get_root_dir():
 def get_cache_dir():
     dir = get_root_dir() + 'cache/'
     return dir
+
+def label_dates(dates):
+    temps = [datetime.strptime(a, '%Y-%m-%d') for a in dates]
+    return [datetime.strftime(a, '%b %-d') for a in temps]
+
+def cutoff_cname(cname):
+    if len(cname) < 13:
+        return cname
+    else:
+        return cname[:11] + '..'
 
 
 # ----------------Testing----------------

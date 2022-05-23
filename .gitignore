@@ -6,3 +6,4 @@ data/*
 static/graphs/*
 nouns/*
 graphs/wordclouds/*
+*DS_Store

@@ -9,6 +9,7 @@ from cat_reader import CategoryReader
 ## Globals 
 links = tl.get_channel_links()
 graph_dir = './static/graphs/'
+plt.style.use('seaborn')
 
 # Fetch the dates from cache if available
 dates = sorted(set(CategoryReader(links[0]).dates))
@@ -74,8 +75,8 @@ def make_graph(search_string):
         n, width = len(links), 5
         height = math.ceil(n/width)
         fig, axes = plt.subplots(nrows=height, ncols=width,
-                sharey=True, figsize=(8, 12))
-        cmap = plt.cm.get_cmap('hsv', n)
+                sharey=True, sharex=True, figsize=(8, 12))
+        # cmap = plt.cm.get_cmap('hsv', n)
 
         idx = 0
         for idx, link in enumerate(links):
@@ -84,16 +85,16 @@ def make_graph(search_string):
             chan = CategoryReader(link)
             size = func(search_string, chan)
 
-            axes[i, j].plot(size, c=cmap(idx))
-            axes[i, j].set_title(chan.channel_name)
+            axes[i, j].plot(size)
+            axes[i, j].set_title(tl.cutoff_cname(chan.channel_name))
             axes[i, j].tick_params(labelbottom=False)
 
-            if (i+1)*width+j >= len(links):
-                a, b, c = 0, (len(dates)-1)//2, len(dates)-1
-                tmp = [date_labels[a], date_labels[b], date_labels[c]]
-                axes[i, j].set_xticks([a, b, c])
-                axes[i, j].set_xticklabels(tmp, rotation=90)
-                axes[i, j].tick_params(labelbottom=True)
+            # if (i+1)*width+j >= len(links):
+            #     a, b, c = 0, (len(dates)-1)//2, len(dates)-1
+            #     tmp = [date_labels[a], date_labels[b], date_labels[c]]
+            #     axes[i, j].set_xticks([a, b, c])
+            #     axes[i, j].set_xticklabels(tmp, rotation=90)
+            #     axes[i, j].tick_params(labelbottom=True)
 
         idx += 1
         # Set and rotate any empty plots also
@@ -114,6 +115,7 @@ def main():
     # for search_string in search_strings:
     #     make_graph(search_string)
 
+    make_graph('russia')
     make_graph('modi')
     pass
 
