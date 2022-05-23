@@ -2,6 +2,7 @@ import matplotlib.pyplot as plt
 import os
 import time
 import math
+import numpy as np
 
 import tools as tl
 from cat_reader import CategoryReader
@@ -13,7 +14,7 @@ plt.style.use('seaborn')
 
 # Fetch the dates from cache if available
 dates = sorted(set(CategoryReader(links[0]).dates))
-date_labels = tl.label_dates(dates)
+labels = tl.label_dates(dates)
 
 def get_date_weight_tf_idf(phrase, channel: CategoryReader):
     '''
@@ -76,7 +77,7 @@ def make_graph(search_string):
         height = math.ceil(n/width)
         fig, axes = plt.subplots(nrows=height, ncols=width,
                 sharey=True, sharex=True, figsize=(8, 12))
-        # cmap = plt.cm.get_cmap('hsv', n)
+        fig.patch.set_facecolor('lightgrey')
 
         idx = 0
         for idx, link in enumerate(links):
@@ -86,15 +87,14 @@ def make_graph(search_string):
             size = func(search_string, chan)
 
             axes[i, j].plot(size)
-            axes[i, j].set_title(tl.cutoff_cname(chan.channel_name))
+            axes[i, j].set_xlabel(tl.cutoff_cname(chan.channel_name))
             axes[i, j].tick_params(labelbottom=False)
 
-            # if (i+1)*width+j >= len(links):
-            #     a, b, c = 0, (len(dates)-1)//2, len(dates)-1
-            #     tmp = [date_labels[a], date_labels[b], date_labels[c]]
-            #     axes[i, j].set_xticks([a, b, c])
+            # if i == 0:
+            #     tmp = [labels[0], labels[-1]]
+            #     axes[i, j].set_xticks([0, len(labels)-1])
             #     axes[i, j].set_xticklabels(tmp, rotation=90)
-            #     axes[i, j].tick_params(labelbottom=True)
+            #     axes[i, j].tick_params(labeltop=True)
 
         idx += 1
         # Set and rotate any empty plots also
@@ -103,7 +103,7 @@ def make_graph(search_string):
             fig.delaxes(axes[i, j])
             idx += 1
 
-        fig.suptitle(f'Presence of "{search_string}" across time in Media')
+        fig.suptitle(f"'{search_string.title()}' in News from {labels[0]} - {labels[-1]}", size='xx-large')
         plt.tight_layout()
         plt.savefig(func_dir + search_string + '.jpg', dpi=500)
 
@@ -115,8 +115,10 @@ def main():
     # for search_string in search_strings:
     #     make_graph(search_string)
 
+    t1 = time.perf_counter()
     make_graph('russia')
-    make_graph('modi')
+    t2 = time.perf_counter()
+    print(t2-t1)
     pass
 
 

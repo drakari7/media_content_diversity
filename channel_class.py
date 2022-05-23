@@ -24,14 +24,14 @@ class NewsChannel:
 
         with open(self.data_file_path, "r") as file:
             self.channel_data = [line[:-1].split("\\#\\")
-                    for line in file.readlines()][::-1]
+                    for line in file.readlines()]
 
         self.video_count    = len(self.channel_data)
         self.titles         = [line[0] for line in self.channel_data]
         self.dates          = [line[2] for line in self.channel_data]
         self.content_tags   = [line[3] for line in self.channel_data]
         self.description    = [line[4] for line in self.channel_data]
-        self.time_range     = self.dates[-1] + " - " + self.dates[0]
+        self.time_range     = self.dates[0] + " - " + self.dates[-1]
 
     # Returns the mean of views on the channel
     def average_views(self) -> float:
