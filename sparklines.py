@@ -10,7 +10,7 @@ from cat_reader import CategoryReader
 ## Globals 
 links = tl.get_channel_links()
 graph_dir = './static/graphs/'
-plt.style.use('seaborn')
+plt.style.use('ggplot')
 
 # Fetch the dates from cache if available
 dates = sorted(set(CategoryReader(links[0]).dates))
@@ -88,7 +88,7 @@ def make_graph(search_string):
 
             axes[i, j].plot(size)
             axes[i, j].set_xlabel(tl.cutoff_cname(chan.channel_name))
-            axes[i, j].tick_params(labelbottom=False)
+            axes[i, j].tick_params(labelbottom=False, labelleft=False)
 
             # if i == 0:
             #     tmp = [labels[0], labels[-1]]
