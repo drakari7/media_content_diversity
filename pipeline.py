@@ -16,7 +16,7 @@ if __name__ == "__main__":
     parallel_workers = 4
 
     # Scraping and collecting data into data/ dir
-    collect_all_data(links, "1 day ago", parallel_workers)
+    collect_all_data(links, 1, parallel_workers)
     append_data(links)
 
     # Generating basic statistic graphs in graphs/ dir

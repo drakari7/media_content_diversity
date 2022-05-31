@@ -233,8 +233,9 @@ def append_data(links):
             af.write(data)
         os.remove(new_path)
 
-def collect_all_data(links, time_range: str, n_workers=6):
+def collect_all_data(links, n_days: int, n_workers=6):
     logging.info(f"Launching collect data function")
+    time_range = str(n_days) + " days ago"
     
     # Define useful lambdas
     is_collected = lambda x: os.path.isfile(x) and os.path.getsize(x) > 0
