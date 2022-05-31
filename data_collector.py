@@ -20,7 +20,7 @@ import tools as tl
 
 # logger options
 logging.basicConfig(filename='logs_data_collection', filemode='w',
-        format='%(asctime)s  %(levelname)s %(message)s',
+        format='%(asctime)s  %(levelname)s:%(message)s',
         level=logging.INFO,
         datefmt='%H:%M:%S')
 # Globals
