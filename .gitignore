@@ -5,5 +5,5 @@ cache/wiki_index.pkl
 data/*
 static/graphs/*
 nouns/*
-graphs/wordclouds/*
+graphs/*
 *DS_Store

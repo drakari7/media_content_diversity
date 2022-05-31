@@ -218,9 +218,6 @@ def scrape_channel_data(channel_link, time_range) -> None:
 def append_data(links):
     new_paths = [file_path(tl.get_channel_name(c)) for c in links]
 
-    # Make backup of previous data
-    shutil.copytree('data', 'data_backup', dirs_exist_ok=True)
-
     for new_path in new_paths:
         old_path = new_path[:-4]
         # Make sure older file exists
@@ -236,7 +233,11 @@ def append_data(links):
 def collect_all_data(links, n_days: int, n_workers=6):
     logging.info(f"Launching collect data function")
     time_range = str(n_days) + " days ago"
-    
+ 
+    # Make backup of previous data
+    shutil.rmtree('data_backup', ignore_errors=True)
+    shutil.copytree('data', 'data_backup')
+
     # Define useful lambdas
     is_collected = lambda x: os.path.isfile(x) and os.path.getsize(x) > 0
 
