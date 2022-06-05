@@ -260,14 +260,9 @@ def collect_all_data(links, n_days: int, n_workers=6):
 
 # ------------------ Start of Main Code -------------------------------
 def main():
-    # Specify time range like "1 week ago", or "3 days ago" etc.
-    # "1 week ago" means that you want data from past week
-
-    channels = tl.get_channel_links()
-    new_paths = [file_path(tl.get_channel_name(c)) for c in channels]
-    print(new_paths)
-    # collect_all_data(time_range="1 week ago")
-    # append_data()
+    links = tl.get_channel_links()
+    collect_all_data(links, n_days=1)
+    append_data(links)
 
 
 if __name__ == "__main__":
