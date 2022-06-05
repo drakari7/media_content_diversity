@@ -19,7 +19,7 @@ from selenium.webdriver.support import expected_conditions as EC
 import tools as tl
 
 # logger options
-logging.basicConfig(filename='logs_data_collection', filemode='w',
+logging.basicConfig(filename='log_pipeline', filemode='w',
         format='%(asctime)s  %(levelname)s:%(message)s',
         level=logging.INFO,
         datefmt='%H:%M:%S')

@@ -15,7 +15,7 @@ This file will be run on a weekly cronjob from a server.
 """
 if __name__ == "__main__":
     # logger options
-    logging.basicConfig(filename='logs_data_collection', filemode='w',
+    logging.basicConfig(filename='log_pipeline', filemode='w',
             format='%(asctime)s  %(levelname)s:%(message)s',
             level=logging.INFO,
             datefmt='%H:%M:%S')
