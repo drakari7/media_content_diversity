@@ -21,7 +21,7 @@ def get_channel_links():
 
 def get_temp_links():
     links = get_channel_links()
-    links = links[22:23]
+    links = links[11:12] + links[18:19]
     return links
 
 

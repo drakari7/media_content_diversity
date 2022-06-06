@@ -21,7 +21,7 @@ if __name__ == "__main__":
             datefmt='%H:%M:%S')
 
     links = tl.get_channel_links()
-    parallel_workers = 4
+    parallel_workers = 7
 
     logging.info(f"Starting pipeline with {parallel_workers} workers")
 
@@ -37,7 +37,7 @@ if __name__ == "__main__":
     # # Perform NLP processing to generate all nouns file
     nlp_parse_channels(links, parallel_workers)
 
-    logging.info(f"Starting wikipedia noun filtering")
+    logging.info(f"Finished NLP. Starting wikipedia noun filtering")
     # Do wikipedia noun filtering, and generate relevant files
     wikiparse_channels(links, parallel_workers)
 

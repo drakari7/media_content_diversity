@@ -260,8 +260,8 @@ def collect_all_data(links, n_days: int, n_workers=6):
 
 # ------------------ Start of Main Code -------------------------------
 def main():
-    links = tl.get_channel_links()
-    collect_all_data(links, n_days=1)
+    links = tl.get_temp_links()
+    collect_all_data(links, 44)
     append_data(links)
 
 
