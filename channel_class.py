@@ -1,5 +1,6 @@
 # Importing libraries
 import statistics
+from datetime import timedelta, date, datetime
 
 # local imports
 import tools as tl
@@ -46,21 +47,32 @@ class NewsChannel:
             if len(line) < 5:
                 print(index + 1, len(line), self.channel_name)
 
+    def missing_dates(self, start, end):
+        if end < start:
+            raise AssertionError("End date before start date!")
+
+        dates = set(self.dates)
+        curr = start
+        print(f"Missing dates for {self.channel_name}:")
+        while curr <= end:
+            if curr not in dates:
+                print(curr, end=', ')
+
+            # Increase date by 1
+            curr = datetime.strptime(curr, '%Y-%m-%d') + timedelta(1)
+            curr = curr.strftime('%Y-%m-%d')
+        print()
+
 
 # For testing purposes
 def main():
     test_links = tl.get_channel_links()
 
-    count = 0
+    start, end = '2022-02-08', '2022-03-06'
     for link in test_links:
-        try:
-            test_channel = NewsChannel(link)
-            test_channel.is_broken()
-        except IndexError:
-            print(link)
-            count += 1
+        chan = NewsChannel(link)
+        chan.missing_dates(start, end)
 
-    print(count)
 
 
 if __name__ == "__main__":
