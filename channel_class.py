@@ -1,6 +1,6 @@
 # Importing libraries
 import statistics
-from datetime import timedelta, date, datetime
+from datetime import timedelta, datetime
 
 # local imports
 import tools as tl
@@ -53,22 +53,27 @@ class NewsChannel:
 
         dates = set(self.dates)
         curr = start
-        print(f"Missing dates for {self.channel_name}:")
+        missing = []
         while curr <= end:
             if curr not in dates:
-                print(curr, end=', ')
+                missing.append(curr)
 
             # Increase date by 1
             curr = datetime.strptime(curr, '%Y-%m-%d') + timedelta(1)
             curr = curr.strftime('%Y-%m-%d')
-        print()
+
+        # Print if there are any missing dates
+        if missing:
+            print(f"Missing dates for {self.channel_name}:")
+            print(missing)
+
 
 
 # For testing purposes
 def main():
     test_links = tl.get_channel_links()
 
-    start, end = '2022-02-08', '2022-03-06'
+    start, end = '2022-04-23', '2022-06-09'
     for link in test_links:
         chan = NewsChannel(link)
         chan.missing_dates(start, end)
