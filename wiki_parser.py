@@ -3,13 +3,10 @@ from mwclient.page import Page
 from collections import Counter
 import csv
 import math
-import time
 import os
 import pickle
 import json
 from concurrent.futures import ThreadPoolExecutor
-from wordcloud import WordCloud 
-import matplotlib.pyplot as plt
 
 import tools as tl
 from channel_class import NewsChannel
@@ -64,7 +61,6 @@ class WikiNounParser(NewsChannel):
         self.all_noun_file = "nouns/all_nouns/" + self.channel_name + ".csv"
         self.category_file = "nouns/categories/" + self.channel_name + ".pkl"
         self.tf_idf_file = "nouns/tf_idf/" + self.channel_name
-        self.wordcloud_folder = "graphs/wordclouds/" + self.channel_name + "/"
         self.cat_rank = {}
         self.rank_coeff = 0.98
         self.freq_matrix = []
@@ -80,7 +76,6 @@ class WikiNounParser(NewsChannel):
         os.makedirs("./nouns/all_nouns", exist_ok=True)
         os.makedirs("./nouns/categories", exist_ok=True)
         os.makedirs("./nouns/tf_idf", exist_ok=True)
-        os.makedirs("./graphs/wordclouds", exist_ok=True)
 
     # Load all nouns from all noun file
     def read_all_nouns(self):
@@ -234,33 +229,6 @@ class WikiNounParser(NewsChannel):
 
         self.wiki_categoriser()
 
-    def produce_wordcloud(self):
-        """
-        Makes wordcloud using the weights of categories calculated
-        previously.
-        """
-        os.makedirs(self.wordcloud_folder, exist_ok=True)
-        for i, vid_cats in enumerate(self.wiki_cats):
-            freq_dict = {}
-            for cat, weight in vid_cats:
-                if  weight != 0:
-                    freq_dict[cat] = weight
-
-            img_filename = self.wordcloud_folder + str(i+1) + '.jpg'
-
-            if freq_dict:
-                vid_wcloud = WordCloud(background_color='white')
-                vid_wcloud.generate_from_frequencies(freq_dict)
-
-                plt.imshow(vid_wcloud, interpolation='bilinear')
-                plt.axis('off')
-                plt.savefig(img_filename)
-                plt.close()
-            else:       # If freq_dict is empty, save blank image
-                blank_img = tl.get_blank_image()
-                blank_img.save(img_filename, 'JPEG')
-
-
     # Saving categories
     def save_categories(self):
         with open(self.category_file, 'wb') as wf:
@@ -288,7 +256,6 @@ def wikiparse_channels(links, n_workers=6):
         chan = WikiNounParser(link)
         chan.compute_wiki_cats()
         chan.save_all()
-        # chan.produce_wordcloud()
 
     with ThreadPoolExecutor(max_workers=n_workers) as executor:
         executor.map(parse_single_channel, links)
@@ -297,11 +264,10 @@ def wikiparse_channels(links, n_workers=6):
 def main():
     links = tl.get_channel_links()
 
-    t1 = time.perf_counter()
-    wikiparse_channels(links)
-
-    t2 = time.perf_counter()
-    print(f"time = {t2 - t1}")
+    for link in links[:1]:
+        chan = WikiNounParser(link)
+        chan.compute_wiki_cats()
+        chan.save_all()
 
     # Always save cache before exiting
     save_cache()
