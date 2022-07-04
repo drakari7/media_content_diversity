@@ -39,10 +39,10 @@ with open(tl.get_cache_dir() + 'wiki_index.pkl', 'rb') as p:
 class WikiNounParser(NewsChannel):
     wiki_noun_file:     str                         # relative path to wiki nouns
     all_noun_file:      str                         # relative path to all nouns
-    category_file:      str                         # Stores cats in pkl
+    rank_file:          str                         # Stores noun ranks in pkl
     all_nouns:          list[list[str]]             # All nouns storage
     wiki_nouns:         list[list[str]]             # Filtered nouns
-    wiki_cats:          list[list[tuple]]           # Common cats of videos
+    noun_ranks:         list[dict[str, float]]      # Scores of nouns of each rank
     cat_rank:           dict[str, float]            # Ranks of categories
     rank_coeff:         float                       # Category rank algo coeff
     freq_matrix:        list[dict[str, int]]        # Frequency count
@@ -59,7 +59,7 @@ class WikiNounParser(NewsChannel):
         self.check_dirs()
         self.wiki_noun_file = "nouns/wiki_nouns/" + self.channel_name + ".csv"
         self.all_noun_file = "nouns/all_nouns/" + self.channel_name + ".csv"
-        self.category_file = "nouns/categories/" + self.channel_name + ".pkl"
+        self.rank_file = "nouns/ranks/" + self.channel_name + ".pkl"
         self.tf_idf_file = "nouns/tf_idf/" + self.channel_name
         self.cat_rank = {}
         self.rank_coeff = 0.98
@@ -74,7 +74,7 @@ class WikiNounParser(NewsChannel):
     def check_dirs(self):
         os.makedirs("./nouns/wiki_nouns", exist_ok=True)
         os.makedirs("./nouns/all_nouns", exist_ok=True)
-        os.makedirs("./nouns/categories", exist_ok=True)
+        os.makedirs("./nouns/ranks", exist_ok=True)
         os.makedirs("./nouns/tf_idf", exist_ok=True)
 
     # Load all nouns from all noun file
@@ -146,12 +146,14 @@ class WikiNounParser(NewsChannel):
         retains important pages only. Stores the important pages
         afterwards.
         """
-        self.wiki_cats = []
+        self.noun_ranks = []
 
-        for vid_wiki_nouns in self.tf_idf_matrix:
+        # compute category weights first
+        # Then compute ranks using those weights
+        for filtered_nouns in self.tf_idf_matrix:
             cat_counts = Counter()
 
-            for noun, _ in vid_wiki_nouns:
+            for noun, _ in filtered_nouns:
                 noun = noun.title()
                 page_cats = wiki_cache[noun]
 
@@ -159,7 +161,22 @@ class WikiNounParser(NewsChannel):
                     for cat in page_cats:
                         cat_counts[cat] += round(self.cat_rank[cat],3)
 
-            self.wiki_cats.append(cat_counts.most_common(10))
+            ranks = {}
+            for noun, _ in filtered_nouns:
+                w, count = 0, 0
+                noun = noun.title()
+                page_cats = wiki_cache[noun]
+
+                if "Disambiguation pages" not in page_cats:
+                    for cat in page_cats:
+                        count += 1
+                        w += cat_counts[cat]
+
+                score = w/count if count != 0 else 0
+                ranks[noun.lower()] = score
+
+            self.noun_ranks.append(ranks)
+
 
     def create_frequency_matrix(self):
         for vid_wiki_nouns in self.wiki_nouns:
@@ -208,7 +225,7 @@ class WikiNounParser(NewsChannel):
                 tf_idf_table[word1] = round(float(value1 * value2), 6)
 
             # Only taking top 10 tf idf scoring nouns
-            tf_idf_table = Counter(tf_idf_table).most_common(10)
+            tf_idf_table = Counter(tf_idf_table).most_common(15)
             self.tf_idf_matrix.append(tf_idf_table)
 
 
@@ -221,7 +238,7 @@ class WikiNounParser(NewsChannel):
         self.create_tf_idf_matrix()
 
     # Wrapper func which computes category ranks
-    def compute_wiki_cats(self):
+    def compute_noun_ranks(self):
         self.read_all_nouns()
         self.wiki_noun_filter()
         self.precompute_ranks()
@@ -229,10 +246,10 @@ class WikiNounParser(NewsChannel):
 
         self.wiki_categoriser()
 
-    # Saving categories
-    def save_categories(self):
-        with open(self.category_file, 'wb') as wf:
-            pickle.dump(self.wiki_cats, wf)
+    # Saving noun ranks
+    def save_noun_ranks(self):
+        with open(self.rank_file, 'wb') as wf:
+            pickle.dump(self.noun_ranks, wf)
 
     # Saving wiki filtered nouns
     def save_wiki_nouns(self):
@@ -247,14 +264,14 @@ class WikiNounParser(NewsChannel):
 
     # Wrapper for performing all saves in one
     def save_all(self):
-        self.save_categories()
+        self.save_noun_ranks()
         self.save_wiki_nouns()
         self.save_tf_idf_matrix()
 
 def wikiparse_channels(links, n_workers=6):
     def parse_single_channel(link):
         chan = WikiNounParser(link)
-        chan.compute_wiki_cats()
+        chan.compute_noun_ranks()
         chan.save_all()
 
     with ThreadPoolExecutor(max_workers=n_workers) as executor:
@@ -266,7 +283,7 @@ def main():
 
     for link in links[:1]:
         chan = WikiNounParser(link)
-        chan.compute_wiki_cats()
+        chan.compute_noun_ranks()
         chan.save_all()
 
     # Always save cache before exiting

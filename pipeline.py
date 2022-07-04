@@ -26,12 +26,12 @@ if __name__ == "__main__":
     logging.info(f"Starting pipeline with {parallel_workers} workers")
 
     # Scraping and collecting data into data/ dir
-    collect_all_data(links, 1, parallel_workers)
-    append_data(links)
+    # collect_all_data(links, 1, parallel_workers)
+    # append_data(links)
 
     # Generating basic statistic graphs in graphs/ dir
-    views_graph()
-    video_count_graph()
+    # views_graph()
+    # video_count_graph()
 
     logging.info(f"Starting NLP text parsing")
     # # Perform NLP processing to generate all nouns file

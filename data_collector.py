@@ -261,7 +261,7 @@ def collect_all_data(links, n_days: int, n_workers=6):
 # ------------------ Start of Main Code -------------------------------
 def main():
     links = tl.get_temp_links()
-    collect_all_data(links, 44)
+    collect_all_data(links, 2)
     append_data(links)
 
 

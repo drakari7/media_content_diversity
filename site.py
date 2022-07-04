@@ -12,7 +12,7 @@ graph_dir = "./static/graphs/"
 def home():
     # If we get a query in site
     if request.method == "POST":
-        query = request.form["query"]
+        query = request.form["query"].title()
 
         os.makedirs(graph_dir, exist_ok=True)
         src = graph_dir + 'metadata/' + query + '.jpg'

@@ -32,9 +32,9 @@ def get_date_weight_tf_idf(phrase, channel: CategoryReader):
         w, count = 0, 0
         while idx < n and channel.dates[idx] <= date:
             count += 1
-            for cat, cat_w in channel.wiki_cats[idx]:
-                if phrase in cat.lower():
-                    w += cat_w
+            for noun, noun_w in channel.noun_ranks[idx].items():
+                if phrase in noun:
+                    w += noun_w
             idx += 1
 
         tmp = 0 if count == 0 else (w/count)**2 * 1000
@@ -88,7 +88,7 @@ def make_graph(search_string):
 
             axes[i, j].plot(size)
             axes[i, j].set_xlabel(tl.cutoff_cname(chan.channel_name))
-            axes[i, j].tick_params(labelbottom=False, labelleft=False)
+            axes[i, j].tick_params(labelbottom=False)
 
             # if i == 0:
             #     tmp = [labels[0], labels[-1]]
@@ -108,7 +108,7 @@ def make_graph(search_string):
         plt.savefig(func_dir + search_string + '.jpg', dpi=500)
 
     _make_graph(get_date_weight_metadata)
-    _make_graph(get_date_weight_tf_idf)
+    # _make_graph(get_date_weight_tf_idf)
 
 def main():
     # search_strings = ['election', 'UP', 'modi', 'kashmir', 'war', 'Pakistan', 'US', 'Ukraine', 'Belarus', 'Russia', 'kyiv', 'BJP', 'Congress', 'hindu', 'cricket', 'zelensky', 'invasion', 'chernobyl', 'ambani', 'energy', 'stock', 'lok sabha']

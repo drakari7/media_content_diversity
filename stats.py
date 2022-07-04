@@ -64,8 +64,8 @@ def time_ranges():      #Time range in which the data has been collected
 
 
 def main():
-    # views_graph()
-    # video_count_graph()
+    views_graph()
+    video_count_graph()
     time_ranges()
     pass
 

@@ -73,10 +73,9 @@ class NewsChannel:
 def main():
     test_links = tl.get_channel_links()
 
-    start, end = '2022-04-23', '2022-06-09'
     for link in test_links:
         chan = NewsChannel(link)
-        chan.missing_dates(start, end)
+        print(chan.channel_name, len(chan.channel_data))
 
 
 
