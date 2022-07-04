@@ -6,20 +6,49 @@ News Trends!
 
 {% block content %}
 
+<div class="center text-white">
+  <div class="heading h2">This is a website for understanding trends
+    across various News channels</div>
+  <h5>Enter any interesting search term below like <em>'Politics'</em> or
+    <em>'Murder'</em> to visualise it's news coverage</h5>
+  <h5>Type in a single search term and submit to visualise it's trend. Enter 2 search terms to compare their trends.</h5>
+</div>
+
 <div class="d-flex justify-content-center">
   <form class="box" action="#" method="post">
-    <input type="text" name="query" id="query"/>
-    <input type="submit" class="button" value="Submit" />
+    <input type="text" class="border-secondary border rounded" name="q1" placeholder="Enter first search term" size="30"/>
+    <!-- <input type="submit" class="btn btn-primary" value="Submit" /> -->
+  <!-- <form class="box" action="#" method="post"> -->
+    <input type="text" class="border-secondary border rounded" name="q2" placeholder="Enter another term to compare" size="30"/>
+    <input type="submit" class="btn btn-primary" value="Submit" />
   </form>
+  <!-- </form> -->
 </div>
 
-  
-</div>
+{% if q1 %}
+  {% if q2 %} <!-- both queries present -->
+  <div class="d-flex justify-content-center">
+    <img src="{{path}}" class="graph" alt="This is a graph comparing
+              {{q1}} and {{q2}}"/>
+  </div>
+  {% else %}
+  <!-- only q1 and no q2 case -->
+  <div class="d-flex justify-content-center">
+    <img src="{{path}}" class="graph" alt="This is a graph about
+              {{q1}}"/>
+  </div>
+  {% endif %}
 
-{% if query %}
-<div class="d-flex justify-content-center">
-  <img src="{{path}}" class="graph" alt="This is a graph about {{query}}"/>
-</div>
+  {% else %} <!-- Case without graphs -->
+    <div class="about">
+      <div class="about-header h3">About This Website</div>
+      <p>This website is part of a thesis written by Shreyash Ravi for
+      his master's degree at <a href="https://www.iitk.ac.in">IIT
+        Kanpur</a> under Professor Nisheeth Srivastava. The source code
+      for the thesis and the website can be found on <a
+        href="https://github.com/drakari7/media_content_diversity">github</a>.
+      </p>
+    </div>
 {% endif %}
 
 {% endblock content %}

@@ -1,4 +1,5 @@
 import matplotlib.pyplot as plt
+import matplotlib.patches as mpatches
 import os
 import time
 import math
@@ -110,13 +111,63 @@ def make_graph(search_string):
     _make_graph(get_date_weight_metadata)
     # _make_graph(get_date_weight_tf_idf)
 
+def compare_graphs(ss1, ss2):
+    def _compare_graph(func):
+        func_dir = graph_dir + func.__name__[16:] + '/'
+        os.makedirs(func_dir, exist_ok=True)
+
+        n, width = len(links), 5
+        height = math.ceil(n/width)
+        fig, axes = plt.subplots(nrows=height, ncols=width,
+                sharey=True, sharex=True, figsize=(8, 12))
+        fig.patch.set_facecolor('lightgrey')
+
+        idx = 0
+        for idx, link in enumerate(links):
+            i, j = idx//width, idx%width
+
+            chan = CategoryReader(link)
+            size1, size2 = func(ss1, chan), func(ss2, chan)
+
+            axes[i, j].plot(size1)
+            axes[i, j].plot(size2)
+            axes[i, j].set_xlabel(tl.cutoff_cname(chan.channel_name))
+            axes[i, j].tick_params(labelbottom=False)
+
+            # if i == 0:
+            #     tmp = [labels[0], labels[-1]]
+            #     axes[i, j].set_xticks([0, len(labels)-1])
+            #     axes[i, j].set_xticklabels(tmp, rotation=90)
+            #     axes[i, j].tick_params(labeltop=True)
+
+        idx += 1
+        # Set and rotate any empty plots also
+        while idx < height*width:
+            i, j = idx//width, idx%width
+            fig.delaxes(axes[i, j])
+            idx += 1
+
+        fig.suptitle(f"'{ss1.title()}' and '{ss2.title()}' in News from {labels[0]} - {labels[-1]}", size='xx-large')
+        plt.tight_layout()
+
+        red_patch = mpatches.Patch(color='red', label=ss1)
+        blue_patch = mpatches.Patch(color='blue', label=ss2)
+        fig.legend(handles=[red_patch, blue_patch])
+
+        comb_string = ss1.title() + '_' + ss2.title()
+        plt.savefig(func_dir + comb_string + '.jpg', dpi=500)
+
+    _compare_graph(get_date_weight_metadata)
+
+
 def main():
     # search_strings = ['election', 'UP', 'modi', 'kashmir', 'war', 'Pakistan', 'US', 'Ukraine', 'Belarus', 'Russia', 'kyiv', 'BJP', 'Congress', 'hindu', 'cricket', 'zelensky', 'invasion', 'chernobyl', 'ambani', 'energy', 'stock', 'lok sabha']
     # for search_string in search_strings:
     #     make_graph(search_string)
 
     t1 = time.perf_counter()
-    make_graph('russia')
+    compare_graphs('covid', 'corona')
+    # make_graph('ukraine')
     t2 = time.perf_counter()
     print(t2-t1)
     pass

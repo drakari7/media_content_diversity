@@ -1,14 +1,29 @@
 body {
-    margin-top: 20px;
-    background-color: lightblue;
+    min-height: 100vh;
+    padding-bottom: 20px;
+    background-image: linear-gradient(to bottom, midnightblue, dodgerblue);
+}
+
+.about-header {
+    color: black;
+}
+
+.about {
+    padding-top: 10px;
+    position: fixed;
+    bottom: 0;
+    text-align: center;
+    color: grey;
+    background-color: gainsboro;
+}
+
+.heading {
+    padding-top: 50px;
+    padding-bottom: 50px;
 }
 
 .box {
     padding: 20px;
-}
-
-.button {
-    margin-left: 20px;
 }
 
 .graph {
@@ -31,3 +46,9 @@ body {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
+
+.center {
+    text-align: center;
+}
+
+
