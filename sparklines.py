@@ -104,7 +104,7 @@ def make_graph(search_string):
             fig.delaxes(axes[i, j])
             idx += 1
 
-        fig.suptitle(f"'{search_string.title()}' in News from {labels[0]} - {labels[-1]}", size='xx-large')
+        fig.suptitle(f"'{search_string.title()}' in News from {labels[0]} - {labels[-1]},{dates[0][:4]}", size='xx-large')
         plt.tight_layout()
         plt.savefig(func_dir + search_string + '.jpg', dpi=500)
 
@@ -147,12 +147,12 @@ def compare_graphs(ss1, ss2):
             fig.delaxes(axes[i, j])
             idx += 1
 
-        fig.suptitle(f"'{ss1.title()}' and '{ss2.title()}' in News from {labels[0]} - {labels[-1]}", size='xx-large')
+        fig.suptitle(f"'{ss1.title()}' and '{ss2.title()}' in News from {labels[0]} - {labels[-1]},{dates[0][:4]}", size='xx-large')
         plt.tight_layout()
 
         red_patch = mpatches.Patch(color='red', label=ss1)
         blue_patch = mpatches.Patch(color='blue', label=ss2)
-        fig.legend(handles=[red_patch, blue_patch])
+        fig.legend(handles=[red_patch, blue_patch], loc='lower right')
 
         comb_string = ss1.title() + '_' + ss2.title()
         plt.savefig(func_dir + comb_string + '.jpg', dpi=500)
@@ -166,8 +166,7 @@ def main():
     #     make_graph(search_string)
 
     t1 = time.perf_counter()
-    compare_graphs('covid', 'corona')
-    # make_graph('ukraine')
+    compare_graphs('Russia', 'Ukraine')
     t2 = time.perf_counter()
     print(t2-t1)
     pass

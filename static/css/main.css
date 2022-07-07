@@ -9,17 +9,24 @@ body {
 }
 
 .about {
+    font-size: 13px;
     padding-top: 10px;
     position: fixed;
     bottom: 0;
     text-align: center;
-    color: grey;
+    color: black;
     background-color: gainsboro;
 }
 
 .heading {
     padding-top: 50px;
     padding-bottom: 50px;
+    color: orange;
+}
+
+.highlight {
+    color: coral;
+    font-style: bold;
 }
 
 .box {
