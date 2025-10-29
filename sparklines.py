@@ -104,12 +104,12 @@ def make_graph(search_string):
             fig.delaxes(axes[i, j])
             idx += 1
 
-        fig.suptitle(f"'{search_string.title()}' in News from {labels[0]} - {labels[-1]},{dates[0][:4]}", size='xx-large')
+        fig.suptitle(f"'{search_string.title()}' in News from {labels[0]} - {labels[-1]},{dates[-1][:4]}", size='xx-large')
         plt.tight_layout()
         plt.savefig(func_dir + search_string + '.jpg', dpi=500)
 
-    _make_graph(get_date_weight_metadata)
-    # _make_graph(get_date_weight_tf_idf)
+    # _make_graph(get_date_weight_metadata)
+    _make_graph(get_date_weight_tf_idf)
 
 def compare_graphs(ss1, ss2):
     def _compare_graph(func):
@@ -147,7 +147,7 @@ def compare_graphs(ss1, ss2):
             fig.delaxes(axes[i, j])
             idx += 1
 
-        fig.suptitle(f"'{ss1.title()}' and '{ss2.title()}' in News from {labels[0]} - {labels[-1]},{dates[0][:4]}", size='xx-large')
+        fig.suptitle(f"'{ss1.title()}' and '{ss2.title()}' in News from {labels[0]} - {labels[-1]},{dates[-1][:4]}", size='xx-large')
         plt.tight_layout()
 
         red_patch = mpatches.Patch(color='red', label=ss1)
@@ -157,7 +157,8 @@ def compare_graphs(ss1, ss2):
         comb_string = ss1.title() + '_' + ss2.title()
         plt.savefig(func_dir + comb_string + '.jpg', dpi=500)
 
-    _compare_graph(get_date_weight_metadata)
+    # _compare_graph(get_date_weight_metadata)
+    _compare_graph(get_date_weight_tf_idf)
 
 
 def main():
@@ -165,10 +166,8 @@ def main():
     # for search_string in search_strings:
     #     make_graph(search_string)
 
-    t1 = time.perf_counter()
-    compare_graphs('Russia', 'Ukraine')
-    t2 = time.perf_counter()
-    print(t2-t1)
+    make_graph('Ukraine')
+    # compare_graphs('hindu', 'muslim')
     pass
 
 
